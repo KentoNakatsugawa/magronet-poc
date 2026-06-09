@@ -1,0 +1,9 @@
+# OS
+.DS_Store
+# Node (将来Next化したとき用)
+node_modules/
+.next/
+out/
+*.log
+.env*
+!.env.example

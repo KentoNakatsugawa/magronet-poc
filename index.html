@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>maguro 中古車検索</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #002047;
+    --navy-soft: #0A3163;
+    --sky: #00A0E9;
+    --sky-dark: #0086C5;
+    --charcoal: #333333;
+    --gray-text: #5A6573;
+    --gray-muted: #94A0AE;
+    --light-gray: #F4F7F9;
+    --line: #E2E8EE;
+    --line-soft: #EEF2F6;
+    --white: #FFFFFF;
+    --good: #1A9E5C;
+    --warn: #D98300;
+    --deal: #E8273A;
+    --gold: #F5A623;
+    --gold-deep: #E08600;
+    --sky-grad: linear-gradient(135deg, #00B4F0 0%, #0079C4 100%);
+    --navy-grad: linear-gradient(135deg, #002047 0%, #0B3A6F 100%);
+    --hero-grad: linear-gradient(120deg, #002047 0%, #014A8F 50%, #00A0E9 125%);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: linear-gradient(180deg, #E4EFF8 0%, #F4F7F9 280px);
+    background-attachment: fixed;
+    color: var(--charcoal);
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+  }
+  h1,h2,h3 { color: var(--navy); }
+
+  /* ── Header ── */
+  .header { background: var(--navy-grad); box-shadow: 0 2px 0 var(--sky), 0 6px 24px rgba(0,32,71,0.28); }
+  .header-search:focus-within {
+    box-shadow: 0 0 0 3px rgba(0,160,233,0.45);
+  }
+
+  /* ── Filter form controls ── */
+  .field-label {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 9px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding-left: 9px;
+    border-left: 3px solid var(--sky);
+  }
+  select, input[type=text], input[type=number] {
+    width: 100%;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 14px !important;
+    min-height: 54px !important;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  select:focus, input:focus {
+    border-color: var(--sky);
+    box-shadow: 0 0 0 3px rgba(0,160,233,0.15);
+  }
+  select { cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2300A0E9' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+  }
+  select:hover { border-color: #BBD3E5; }
+
+  /* ── Radio pills ── */
+  .radio-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .radio-pill { position: relative; cursor: pointer; }
+  .radio-pill input { position: absolute; opacity: 0; }
+  .radio-pill span {
+    display: inline-block;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    color: var(--gray-text);
+    background: var(--white);
+    transition: all 0.15s;
+  }
+  .radio-pill:hover span { border-color: var(--sky); color: var(--sky-dark); }
+  .radio-pill input:checked + span {
+    background: var(--sky-grad);
+    border-color: var(--sky);
+    color: var(--white);
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,160,233,0.3);
+  }
+
+  /* ── Checkbox row ── */
+  .check-row {
+    display: flex; align-items: center; gap: 11px;
+    padding: 9px 10px; margin: 0 -10px; border-radius: 9px;
+    cursor: pointer; font-size: 14.5px; color: var(--gray-text);
+    transition: background 0.12s;
+  }
+  .check-row:hover { color: var(--navy); background: var(--light-gray); }
+  .check-row input { width: 20px; height: 20px; accent-color: var(--sky); cursor: pointer; flex-shrink: 0; }
+  .check-row .count { margin-left: auto; font-size: 12px; color: var(--gray-muted); font-weight: 500; }
+  /* 複数列レイアウト用：フルブリード用の負マージンを打ち消し、セル内に収める */
+  .check-grid { display: grid; gap: 2px 10px; }
+  .check-grid .check-row { margin: 0; }
+
+  /* ── Body type icon ── */
+  .body-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 13px 6px; border: 1.5px solid var(--line); border-radius: 11px;
+    background: var(--white); color: var(--gray-text); font-size: 12.5px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .body-btn:hover { border-color: var(--sky); color: var(--sky); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,160,233,0.15); }
+  .body-btn.active { border-color: var(--sky); background: rgba(0,160,233,0.1); color: var(--sky-dark); font-weight: 700; box-shadow: 0 4px 12px rgba(0,160,233,0.18); }
+
+  /* ── Color chip ── */
+  .color-chip {
+    width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+    border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--line);
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .color-chip:hover { transform: scale(1.1); box-shadow: 0 0 0 2px var(--sky); }
+  .color-chip.active { box-shadow: 0 0 0 3px var(--sky); transform: scale(1.1); }
+
+  /* ── Accordion ── */
+  .acc-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; cursor: pointer; user-select: none;
+  }
+  .acc-head h3 { font-size: 13px; font-weight: 700; }
+  .acc-body { overflow: hidden; transition: max-height 0.25s ease; }
+
+  /* ── Vehicle card (list) ── */
+  /* 行レイアウト：カードで囲まず、車種間を水平線で区切る */
+  .v-card {
+    background: var(--white); border: none; border-bottom: 1px solid var(--line); border-radius: 0;
+    transition: background 0.15s; cursor: pointer; position: relative;
+  }
+  .v-card:last-child { border-bottom: none; }
+  .v-card::before {
+    content:''; position:absolute; top:0; left:0; width:4px; height:100%;
+    background:var(--sky-grad); opacity:0; transition:opacity 0.18s;
+  }
+  .v-card:hover { background: rgba(0,160,233,0.045); }
+  .v-card:hover::before { opacity:1; }
+  .v-card > div { padding: 18px; gap: 18px; align-items: flex-start; }
+  .v-card > div > .flex-1 { padding: 0; }
+
+  .v-img {
+    background: radial-gradient(circle at 50% 32%, #F2F8FC 0%, #DBE7EF 65%, #C7D5E0 100%);
+    display: flex; align-items: center; justify-content: center; position: relative;
+    border-radius: 10px; overflow: hidden;
+  }
+  .v-card .v-media { width: 248px; flex-shrink: 0; }
+  .v-card .v-img { width: 100%; height: 160px; }
+  .v-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .v-thumb { height: 46px; border-radius: 6px; overflow: hidden; cursor: pointer; position: relative; background: #E3ECF3; transition: box-shadow 0.15s; }
+  .v-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .v-thumb:hover { box-shadow: 0 0 0 2px var(--sky); }
+  .v-img::after {
+    content:''; position:absolute; inset:0;
+    background: linear-gradient(115deg, transparent 60%, rgba(255,255,255,0.45) 75%, transparent 90%);
+    opacity:0; transition: opacity 0.4s;
+  }
+  .v-card:hover .v-img::after { opacity:1; }
+
+  /* spec table inside card */
+  .spec-table { width: 100%; border-collapse: collapse; }
+  .spec-table td { padding: 4px 0; font-size: 12px; vertical-align: top; }
+  .spec-table .k { color: var(--gray-muted); width: 64px; white-space: nowrap; }
+  .spec-table .v { color: var(--charcoal); font-weight: 500; }
+  .spec-table .v-emph { font-size: 18px; font-weight: 700; color: var(--navy); line-height: 1.15; }
+
+  /* badge */
+  .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+  .b-new { background: var(--sky-grad); color: #fff; box-shadow: 0 2px 6px rgba(0,160,233,0.4); }
+  .b-deal { background: linear-gradient(135deg,#FF5566,#E8273A); color: #fff; box-shadow: 0 2px 6px rgba(232,39,58,0.4); }
+  .b-warranty { background: rgba(26,158,92,0.12); color: var(--good); }
+  .b-oneowner { background: var(--light-gray); color: var(--gray-text); }
+
+  /* equip icon */
+  .equip { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: var(--gray-text);
+    padding: 2px 6px; background: var(--light-gray); border-radius: 4px; }
+
+  /* rating badge */
+  .rating-badge {
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 48px; height: 48px; border-radius: 10px; background: var(--navy-grad); color: var(--white);
+    border: 1.5px solid var(--gold); box-shadow: 0 3px 10px rgba(0,32,71,0.25);
+  }
+
+  /* applied filter chip */
+  .filter-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 8px 4px 10px; background: rgba(0,160,233,0.1); border: 1px solid rgba(0,160,233,0.3);
+    border-radius: 100px; font-size: 12px; color: var(--sky-dark); font-weight: 500;
+  }
+  .filter-chip button { line-height: 0; color: var(--sky-dark); }
+
+  /* compare checkbox on card */
+  .compare-check {
+    display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--gray-text); cursor: pointer;
+  }
+  .compare-check input { width: 15px; height: 15px; accent-color: var(--sky); }
+
+  /* fav */
+  .fav-btn { transition: transform 0.15s; }
+  .fav-btn:hover { transform: scale(1.12); }
+
+  /* market gauge */
+  .gauge-track { height: 5px; background: var(--line); border-radius: 3px; position: relative; overflow: hidden; }
+  .gauge-fill { position: absolute; top:0; left:0; height: 100%; border-radius: 3px; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #CBD5DF; border-radius: 4px; }
+
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+  /* 並び替えタブ（ドロップダウンではなく全展開） */
+  .sort-tab {
+    padding: 8px 15px; font-size: 13px; font-weight: 600; border-radius: 9px;
+    color: var(--gray-text); background: transparent; white-space: nowrap; flex-shrink: 0;
+    transition: all 0.15s; cursor: pointer; border: none;
+  }
+  .sort-tab:hover { background: var(--light-gray); color: var(--navy); }
+  .sort-tab.active { background: var(--sky-grad); color: #fff; box-shadow: 0 3px 8px rgba(0,160,233,0.3); }
+
+  /* 並び替え：各基準を両方向トグル */
+  .sort-group, .filter-group { display:inline-flex; align-items:center; gap:6px; padding:4px 6px 4px 11px; border:1px solid var(--line); border-radius:9px; flex-shrink:0; }
+  .filter-group { border-color:rgba(26,158,92,0.35); background:rgba(26,158,92,0.04); }
+  .sort-group-label { font-size:13px; font-weight:600; color:var(--navy); white-space:nowrap; }
+  .sort-dir, .filter-dir { width:30px; height:28px; font-size:12px; font-weight:700; border-radius:6px; color:var(--gray-text); background:var(--light-gray); cursor:pointer; transition:all 0.15s; border:none; }
+  .sort-dir:hover, .filter-dir:hover { color:var(--sky-dark); background:#E3EEF6; }
+  .sort-dir.active { background:var(--sky-grad); color:#fff; box-shadow:0 2px 6px rgba(0,160,233,0.35); }
+  .filter-dir.active { background:var(--good); color:#fff; box-shadow:0 2px 6px rgba(26,158,92,0.3); }
+
+  /* CTA系ボタン共通の心地よいフィードバック */
+  button[style*="--sky-grad"] {
+    transition: filter 0.15s, box-shadow 0.15s, transform 0.1s; cursor: pointer;
+  }
+  button[style*="--sky-grad"]:hover { filter: brightness(1.08); box-shadow: 0 8px 20px rgba(0,160,233,0.4); }
+  button[style*="--sky-grad"]:active { transform: scale(0.97); }
+
+  /* ━━━━━━ 商談プレゼンモード ━━━━━━ */
+  /* 営業がPC画面をZoom共有→お客様がスマホで視聴する前提。縮小されても核情報が読める   */
+  /* よう、単一車両を大型・高コントラストで提示する。フォントは約50%縮小後も判読できる   */
+  /* サイズ（重要情報は概ね22px以上）に設定。配色はブランドパレットに準拠               */
+  /* （ネイビー文字／ライトグレー地／白カード／スカイ・ゴールドのアクセント。ダーク地は不可）。*/
+  #presentModal { display: flex; flex-direction: column; color: var(--charcoal); background: var(--light-gray); }
+  .pm-topbar {
+    height: 64px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; background: var(--navy-grad); border-bottom: 2px solid var(--sky); color: #fff;
+  }
+  .pm-brand { font-size: 22px; font-weight: 700; letter-spacing: 0.04em; }
+  .pm-brand span { font-size: 16px; font-weight: 500; color: var(--sky); margin-left: 10px; }
+  .pm-hint { font-size: 15px; color: rgba(255,255,255,0.8); font-weight: 500; }
+  .pm-close { font-size: 17px; font-weight: 700; color: #fff; padding: 9px 18px; border-radius: 10px; background: rgba(255,255,255,0.16); border: none; cursor: pointer; transition: background 0.15s; }
+  .pm-close:hover { background: rgba(255,255,255,0.3); }
+
+  .pm-body { flex: 1; min-height: 0; display: flex; gap: 28px; padding: 28px; }
+  .pm-photo-col { width: 54%; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .pm-photo { flex: 1; min-height: 0; border-radius: 16px; overflow: hidden; background: var(--white); box-shadow: 0 14px 44px rgba(0,32,71,0.18); position: relative; }
+  .pm-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pm-photo-badge { position: absolute; top: 18px; left: 18px; font-size: 18px; font-weight: 700; padding: 8px 16px; border-radius: 10px; background: var(--sky-grad); color: #fff; box-shadow: 0 4px 14px rgba(0,160,233,0.4); }
+  .pm-thumbs { height: 84px; flex-shrink: 0; display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
+  .pm-thumbs > div { border-radius: 10px; overflow: hidden; background: var(--white); cursor: pointer; border: 2.5px solid var(--line); transition: border-color 0.15s; }
+  .pm-thumbs > div.active, .pm-thumbs > div:hover { border-color: var(--sky); }
+  .pm-thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .pm-info-col { width: 46%; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 8px; }
+  .pm-maker { font-size: 18px; font-weight: 600; color: var(--sky-dark); letter-spacing: 0.05em; }
+  .pm-name { font-size: 32px; font-weight: 700; line-height: 1.2; color: var(--navy); }
+  .pm-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pm-badge { font-size: 17px; font-weight: 700; padding: 8px 16px; border-radius: 10px; }
+  .pm-badge.good { background: rgba(26,158,92,0.1); color: var(--good); border: 1.5px solid rgba(26,158,92,0.35); }
+  .pm-badge.sky { background: rgba(0,160,233,0.1); color: var(--sky-dark); border: 1.5px solid rgba(0,160,233,0.35); }
+  .pm-badge.plain { background: var(--white); color: var(--gray-text); border: 1.5px solid var(--line); }
+
+  .pm-price { background: var(--white); border: 1.5px solid var(--line); border-radius: 16px; padding: 22px 24px; color: var(--navy); box-shadow: 0 4px 16px rgba(0,32,71,0.06); display: flex; align-items: center; gap: 20px; }
+  .pm-price-left { flex: 1; min-width: 0; }
+  .pm-price .lbl-total { font-size: 16px; font-weight: 700; color: var(--gray-text); }
+  .pm-price .total { font-size: 54px; font-weight: 700; line-height: 1; color: var(--navy); }
+  .pm-price .total span { font-size: 24px; }
+  .pm-price .sub { font-size: 17px; font-weight: 600; color: var(--gray-text); margin-top: 6px; }
+  .pm-price-right { flex-shrink: 0; background: rgba(0,160,233,0.08); border-radius: 12px; padding: 16px 20px; }
+  .pm-price-right .total-lbl { font-size: 15px; font-weight: 700; color: var(--sky-dark); }
+  .pm-price-right .total-amt { font-size: 36px; font-weight: 700; color: var(--sky-dark); line-height: 1.1; margin-top: 2px; }
+  .pm-price-right .total-amt span { font-size: 18px; }
+  .pm-price-right .total-body { font-size: 13px; color: var(--gray-text); margin-top: 4px; }
+
+  .pm-specs { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  .pm-spec { background: var(--white); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px 8px; text-align: center; }
+  .pm-spec .v { font-size: 26px; font-weight: 700; color: var(--navy); line-height: 1.1; }
+  .pm-spec .v.good { color: var(--good); }
+  .pm-spec .k { font-size: 14px; color: var(--gray-muted); margin-top: 5px; font-weight: 600; }
+
+  .pm-report { background: var(--white); border: 1.5px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+  .pm-report .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .pm-report .head .t { font-size: 19px; font-weight: 700; color: var(--navy); }
+  .pm-report .head .score { font-size: 18px; font-weight: 700; color: #fff; background: var(--navy-grad); border: 1.5px solid var(--gold); padding: 5px 14px; border-radius: 9px; }
+  .pm-report .row { display: flex; align-items: center; gap: 14px; margin-bottom: 11px; }
+  .pm-report .row:last-child { margin-bottom: 0; }
+  .pm-report .row .lbl { font-size: 16px; width: 88px; color: var(--gray-text); font-weight: 600; }
+  .pm-report .row .track { flex: 1; height: 10px; background: var(--line); border-radius: 5px; overflow: hidden; }
+  .pm-report .row .fill { height: 100%; border-radius: 5px; }
+  .pm-report .row .rk { font-size: 16px; font-weight: 700; width: 52px; text-align: right; color: var(--navy); }
+
+  .pm-shop { font-size: 16px; color: var(--gray-text); display: flex; align-items: center; gap: 8px; }
+  .pm-cta { display: flex; gap: 14px; margin-top: 4px; }
+  .pm-cta button { font-size: 20px; font-weight: 700; padding: 16px 0; border-radius: 12px; border: none; cursor: pointer; transition: filter 0.15s, transform 0.1s; }
+  .pm-cta button:active { transform: scale(0.98); }
+  .pm-cta .propose { flex: 1; background: var(--sky-grad); color: #fff; box-shadow: 0 6px 20px rgba(0,160,233,0.35); }
+  .pm-cta .propose:hover { filter: brightness(1.08); }
+  .pm-cta .fav { width: 64px; flex-shrink: 0; background: var(--white); border: 1.5px solid var(--line); color: var(--gray-text); }
+
+  /* スマホ縦持ち（横長より縦長）では縦積みにフォールバック。横向きを推奨。 */
+  @media (max-aspect-ratio: 1/1) {
+    .pm-body { flex-direction: column; gap: 16px; padding: 16px; overflow-y: auto; }
+    .pm-photo-col, .pm-info-col { width: 100%; }
+    .pm-photo { min-height: 230px; height: 36vh; flex: none; }
+    .pm-info-col { overflow: visible; }
+    .pm-name { font-size: 26px; }
+    .pm-price { flex-direction: column; align-items: stretch; }
+    .pm-price .total { font-size: 44px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ━━━━━━━━━━ HEADER ━━━━━━━━━━ -->
+<header class="header sticky top-0 z-40">
+  <div class="max-w-[1400px] mx-auto px-5 h-14 flex items-center gap-6">
+    <a href="#" class="flex items-center gap-2 flex-shrink-0">
+      <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="6" fill="#00A0E9"/>
+        <path d="M6 18L9.5 11h9L22 18H6Z" stroke="white" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+        <circle cx="10" cy="19.5" r="1.5" fill="white"/><circle cx="18" cy="19.5" r="1.5" fill="white"/>
+      </svg>
+      <span class="text-white font-bold text-lg tracking-tight">maguro</span>
+    </a>
+
+    <!-- keyword search -->
+    <div class="header-search flex-1 max-w-xl flex items-center bg-white rounded-lg overflow-hidden transition-shadow">
+      <input type="text" placeholder="車種名・キーワードで検索（例：ハリアー 4WD 黒）" class="flex-1 border-0 focus:ring-0" style="box-shadow:none; border:none;">
+      <button class="px-5 h-9 m-1 rounded-md text-white font-bold text-sm flex-shrink-0" style="background:var(--sky-grad);">検索</button>
+    </div>
+
+    <nav class="hidden lg:flex items-center gap-4 text-sm text-white/80 flex-shrink-0">
+      <a href="#" class="hover:text-white transition-colors">相場を調べる</a>
+      <a href="#" class="hover:text-white transition-colors">お気に入り <span class="text-xs">(3)</span></a>
+      <a href="#" class="hover:text-white transition-colors">ログイン</a>
+    </nav>
+  </div>
+</header>
+
+<div class="max-w-[1400px] mx-auto px-5 py-5">
+  <div class="flex gap-5">
+
+    <!-- ━━━━━━━━━━ FILTER SIDEBAR ━━━━━━━━━━ -->
+    <aside class="hidden lg:block w-[280px] flex-shrink-0">
+      <div class="bg-white rounded-xl border border-[var(--line)] sticky top-[72px] max-h-[calc(100vh-88px)] overflow-y-auto">
+
+        <div class="sticky top-0 z-10 bg-white rounded-t-xl flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
+          <h2 class="text-sm font-bold">絞り込み検索</h2>
+          <div class="flex items-center gap-2">
+            <button onclick="openFilterModal()" class="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm" style="color:#fff; background:#FF6B00;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              全条件
+            </button>
+            <button class="text-xs" style="color:var(--gray-muted);">解除</button>
+          </div>
+        </div>
+
+        <div class="px-4 divide-y divide-[var(--line-soft)]">
+
+          <!-- メーカー・車種 -->
+          <div class="py-4">
+            <div class="field-label">メーカー</div>
+            <select class="mb-2">
+              <option>すべてのメーカー</option>
+              <option>トヨタ</option><option>ホンダ</option><option>日産</option>
+              <option>マツダ</option><option>スバル</option><option>スズキ</option>
+              <option>ダイハツ</option><option>三菱</option><option>レクサス</option>
+              <option>BMW</option><option>メルセデス・ベンツ</option><option>アウディ</option>
+            </select>
+            <div class="field-label">車種</div>
+            <select>
+              <option>すべての車種</option>
+              <option>ハリアー</option><option>プリウス</option><option>アルファード</option>
+              <option>ヴォクシー</option><option>ランドクルーザー</option>
+            </select>
+          </div>
+
+          <!-- ボディタイプ -->
+          <div class="py-4">
+            <div class="field-label">ボディタイプ</div>
+            <div class="grid grid-cols-4 gap-1.5">
+              <button class="body-btn" onclick="this.classList.toggle('active')">
+                <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 13h24M5 13l2-5h20l2 5M8 13v2M26 13v2"/><path d="M9 8l1-3h14v3"/></svg>軽
+              </button>
+              <button class="body-btn" onclick="this.classList.toggle('active')">
+                <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 13h24M5 13l2-5h20l2 5M8 13v2M26 13v2"/><path d="M10 8l1.5-3h11l1.5 3"/></svg>コンパクト
+              </button>
+              <button class="body-btn active" onclick="this.classList.toggle('active')">
+                <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l3-6h22l3 6M6 13v2M28 13v2"/><path d="M8 7l3-4h12l3 4"/></svg>SUV
+              </button>
+              <button class="body-btn" onclick="this.classList.toggle('active')">
+                <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l2-7h24l2 7M6 13v2M28 13v2"/><rect x="7" y="3" width="20" height="3" rx="1"/></svg>ミニバン
+              </button>
+              <button class="body-btn" onclick="this.classList.toggle('active')">
+                <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l2-6h24l2 6M6 13v2M28 13v2"/></svg>ステーションワゴン
+              </button>
+              <button class="body-btn" onclick="this.classList.toggle('active')">
+                <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l3-6h22l3 6M6 13v2M28 13v2"/><path d="M9 7l2-4h12l2 4"/></svg>セダン
+              </button>
+              <button class="body-btn" onclick="this.classList.toggle('active')">
+                <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l2-8h24l2 8M6 13v2M28 13v2"/></svg>その他
+              </button>
+            </div>
+          </div>
+
+          <!-- 価格 -->
+          <div class="py-4">
+            <div class="field-label">支払総額</div>
+            <div class="flex items-center gap-2 mb-2">
+              <select><option>下限なし</option><option>50万</option><option>100万</option><option>150万</option><option>200万</option></select>
+              <span class="text-[var(--gray-muted)]">〜</span>
+              <select><option>250万</option><option>300万</option><option>500万</option><option>上限なし</option></select>
+            </div>
+            <label class="check-row"><input type="checkbox"> 車両本体価格で絞り込む</label>
+            <div class="mt-2 pt-2 border-t border-[var(--line-soft)]">
+              <div class="field-label" style="margin-bottom:4px;">月々支払い（ローン試算）</div>
+              <div class="flex items-center gap-2">
+                <select class="text-xs"><option>指定なし</option><option>〜1万円</option><option>〜2万円</option><option>〜3万円</option><option>〜4万円</option><option>〜5万円</option><option>〜6万円</option><option>7万円以上</option></select>
+                <select class="text-xs"><option>48回（4年）</option><option>72回（6年）</option></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 年式・走行 -->
+          <div class="py-4">
+            <div class="field-label">年式</div>
+            <div class="flex items-center gap-2 mb-3">
+              <select><option>指定なし</option><option>2024年</option><option>2022年</option><option>2020年</option><option>2018年</option></select>
+              <span class="text-[var(--gray-muted)]">〜</span>
+              <select><option>最新</option></select>
+            </div>
+            <div class="field-label">走行距離</div>
+            <div class="flex items-center gap-2">
+              <select><option>指定なし</option></select>
+              <span class="text-[var(--gray-muted)]">〜</span>
+              <select><option>3万km</option><option>5万km</option><option>7万km</option><option>10万km</option><option>指定なし</option></select>
+            </div>
+          </div>
+
+          <!-- 状態・こだわり（ラジオ + チェック） -->
+          <div class="py-4">
+            <div class="field-label">修復歴</div>
+            <div class="radio-group mb-3">
+              <label class="radio-pill"><input type="radio" name="repair" checked><span>問わない</span></label>
+              <label class="radio-pill"><input type="radio" name="repair"><span>修復歴なし</span></label>
+              <label class="radio-pill"><input type="radio" name="repair"><span>修復歴あり</span></label>
+            </div>
+            <div class="field-label">車検</div>
+            <div class="radio-group mb-3">
+              <label class="radio-pill"><input type="radio" name="shaken" checked><span>問わない</span></label>
+              <label class="radio-pill"><input type="radio" name="shaken"><span>車検あり</span></label>
+              <label class="radio-pill"><input type="radio" name="shaken"><span>車検なし</span></label>
+              <label class="radio-pill"><input type="radio" name="shaken"><span>車検整備付</span></label>
+            </div>
+            <div class="field-label">鑑定評価点</div>
+            <div class="radio-group">
+              <label class="radio-pill"><input type="radio" name="grade" checked><span>問わない</span></label>
+              <label class="radio-pill"><input type="radio" name="grade"><span>4点以上</span></label>
+              <label class="radio-pill"><input type="radio" name="grade"><span>4.5点以上</span></label>
+            </div>
+          </div>
+
+          <!-- ミッション・駆動 -->
+          <div class="py-4">
+            <div class="field-label">ミッション</div>
+            <div class="radio-group mb-3">
+              <label class="radio-pill"><input type="radio" name="mt" checked><span>問わない</span></label>
+              <label class="radio-pill"><input type="radio" name="mt"><span>AT</span></label>
+              <label class="radio-pill"><input type="radio" name="mt"><span>CVT</span></label>
+              <label class="radio-pill"><input type="radio" name="mt"><span>MT</span></label>
+            </div>
+            <div class="field-label">駆動方式</div>
+            <div class="radio-group">
+              <label class="radio-pill"><input type="radio" name="drive" checked><span>問わない</span></label>
+              <label class="radio-pill"><input type="radio" name="drive"><span>FF</span></label>
+              <label class="radio-pill"><input type="radio" name="drive"><span>FR</span></label>
+              <label class="radio-pill"><input type="radio" name="drive"><span>4WD</span></label>
+            </div>
+          </div>
+
+          <!-- 燃料 -->
+          <div class="py-4">
+            <div class="field-label">燃料・動力</div>
+            <div class="check-grid grid-cols-2">
+              <label class="check-row"><input type="checkbox" checked> ガソリン</label>
+              <label class="check-row"><input type="checkbox"> ハイブリッド</label>
+              <label class="check-row"><input type="checkbox"> ディーゼル</label>
+              <label class="check-row"><input type="checkbox"> 電気（EV）</label>
+              <label class="check-row"><input type="checkbox"> PHEV</label>
+            </div>
+          </div>
+
+          <!-- 排気量・定員・ドア -->
+          <div class="py-4">
+            <div class="field-label">排気量</div>
+            <select class="mb-3"><option>指定なし</option><option>〜660cc（軽）</option><option>〜1000cc</option><option>〜1500cc</option><option>〜2000cc</option><option>2000cc〜</option></select>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <div class="field-label">乗車定員</div>
+                <select class="text-xs"><option>指定なし</option><option>4名</option><option>5名</option><option>7名</option><option>8名</option></select>
+              </div>
+              <div>
+                <div class="field-label">ドア数</div>
+                <select class="text-xs"><option>指定なし</option><option>2ドア</option><option>3ドア</option><option>4ドア</option><option>5ドア</option></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- カラー -->
+          <div class="py-4">
+            <div class="field-label">ボディカラー</div>
+            <div class="flex flex-wrap gap-2.5">
+              <span class="color-chip active" style="background:#1A1A1A;" title="ブラック" onclick="this.classList.toggle('active')"></span>
+              <span class="color-chip" style="background:#FFFFFF;" title="ホワイト" onclick="this.classList.toggle('active')"></span>
+              <span class="color-chip" style="background:#C0C5CC;" title="シルバー" onclick="this.classList.toggle('active')"></span>
+              <span class="color-chip" style="background:#7A7E85;" title="グレー" onclick="this.classList.toggle('active')"></span>
+              <span class="color-chip" style="background:#B11A2B;" title="レッド" onclick="this.classList.toggle('active')"></span>
+              <span class="color-chip" style="background:#1E3A6E;" title="ブルー" onclick="this.classList.toggle('active')"></span>
+              <span class="color-chip" style="background:#3F6F46;" title="グリーン" onclick="this.classList.toggle('active')"></span>
+              <span class="color-chip" style="background:#8B6914;" title="ブラウン" onclick="this.classList.toggle('active')"></span>
+              <span class="color-chip" style="background:#D9A441;" title="ベージュ/ゴールド" onclick="this.classList.toggle('active')"></span>
+            </div>
+          </div>
+
+          <!-- 装備・オプション -->
+          <div class="py-4">
+            <div class="acc-head" onclick="toggleAcc(this)">
+              <h3>装備・オプション</h3>
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="var(--gray-muted)" stroke-width="2" class="acc-arrow"><path d="M1 1l5 5 5-5"/></svg>
+            </div>
+            <div class="acc-body" style="max-height:1000px;">
+              <div class="pb-2">
+                <label class="check-row"><input type="checkbox"> カーナビ（純正/社外）</label>
+                <label class="check-row"><input type="checkbox"> バックカメラ</label>
+                <label class="check-row"><input type="checkbox"> 全方位モニター</label>
+                <label class="check-row"><input type="checkbox"> ETC / ETC2.0</label>
+                <label class="check-row"><input type="checkbox"> ドライブレコーダー</label>
+                <label class="check-row"><input type="checkbox"> 両側電動スライドドア</label>
+                <label class="check-row"><input type="checkbox"> サンルーフ</label>
+                <label class="check-row"><input type="checkbox"> 本革シート</label>
+                <label class="check-row"><input type="checkbox"> シートヒーター</label>
+                <label class="check-row"><input type="checkbox"> LEDヘッドライト</label>
+                <label class="check-row"><input type="checkbox"> 衝突被害軽減ブレーキ</label>
+                <label class="check-row"><input type="checkbox"> レーダークルーズ</label>
+                <label class="check-row"><input type="checkbox"> アイドリングストップ</label>
+                <label class="check-row"><input type="checkbox"> スマートキー</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 保証・販売条件 -->
+          <div class="py-4">
+            <div class="field-label">保証・条件</div>
+            <label class="check-row"><input type="checkbox"> 保証付き</label>
+            <label class="check-row"><input type="checkbox"> 法定整備付き</label>
+            <label class="check-row"><input type="checkbox"> ワンオーナー車</label>
+            <label class="check-row"><input type="checkbox"> 禁煙車</label>
+            <label class="check-row"><input type="checkbox"> 新車保証継承可</label>
+          </div>
+
+          <!-- エリア -->
+          <div class="py-4">
+            <div class="field-label">エリア</div>
+            <select class="mb-2"><option>全国</option><option>北海道・東北</option><option>関東</option><option>中部</option><option>近畿</option><option>中国・四国</option><option>九州・沖縄</option></select>
+            <select><option>都道府県を選択</option><option>東京都</option><option>神奈川県</option><option>大阪府</option><option>愛知県</option></select>
+          </div>
+
+        </div>
+
+        <div class="p-4 sticky bottom-0 bg-white border-t border-[var(--line)]">
+          <button class="w-full py-4 rounded-xl text-white font-bold flex flex-col items-center leading-tight" style="background:var(--sky-grad);">
+            <span class="text-sm">この条件で検索</span>
+            <span class="text-[28px] font-bold tracking-tight tabular-nums mt-1">142,890<span class="text-base font-bold ml-0.5">台</span></span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ━━━━━━━━━━ RESULTS ━━━━━━━━━━ -->
+    <main class="flex-1 min-w-0">
+
+      <!-- ▼ sticky control zone：対面接客のためスクロールしても件数とソートが常に見える -->
+      <div class="sticky top-[56px] z-30 pt-1 pb-2.5 -mx-1 px-1" style="background:var(--light-gray);">
+        <!-- applied filters -->
+        <div class="flex items-center gap-2 flex-wrap mb-2.5">
+          <span class="text-xs text-[var(--gray-muted)]">適用中：</span>
+          <span class="filter-chip">SUV <button>✕</button></span>
+          <span class="filter-chip">ブラック <button>✕</button></span>
+          <span class="filter-chip">ガソリン <button>✕</button></span>
+          <span class="filter-chip">支払総額 〜250万 <button>✕</button></span>
+          <button class="text-xs underline" style="color:var(--sky-dark);">すべて解除</button>
+        </div>
+
+        <!-- toolbar with LIVE count + 全展開ソートタブ -->
+        <div class="bg-white rounded-xl border border-[var(--line)] shadow-sm">
+          <div class="px-4 py-2.5 flex items-center justify-between flex-wrap gap-3 border-b border-[var(--line-soft)]">
+            <div class="flex items-baseline gap-1.5 flex-wrap">
+              <span class="text-[13px] font-bold" style="color:var(--navy);">ご希望に合うクルマ</span>
+              <span class="text-[42px] font-bold leading-none tracking-tight tabular-nums" style="color:var(--sky);" id="liveCount">142,890</span>
+              <span class="text-lg font-bold" style="color:var(--navy);">台</span>
+              <span class="text-[11px] text-[var(--gray-muted)] ml-1">条件を絞ると即更新 ・ 1〜20台を表示中</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="compare-check"><input type="checkbox" onchange="toggleCompareBar(this.checked)"> 比較モード</label>
+              <span class="w-px h-5 bg-[var(--line)]"></span>
+              <div class="flex rounded-md overflow-hidden border border-[var(--line)]">
+                <button class="px-2 py-1.5" style="background:var(--light-gray); color:var(--sky-dark);" title="リスト">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </button>
+                <button class="px-2 py-1.5 text-[var(--gray-muted)]" title="グリッド">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-2 flex flex-wrap items-center gap-2">
+            <button class="sort-tab active" onclick="setSort(this)">おすすめ</button>
+            <div class="sort-group"><span class="sort-group-label">支払総額</span><button class="sort-dir" onclick="setSortDir(this)" title="安い順">安</button><button class="sort-dir" onclick="setSortDir(this)" title="高い順">高</button></div>
+            <div class="sort-group"><span class="sort-group-label">走行距離</span><button class="sort-dir" onclick="setSortDir(this)" title="少ない順">少</button><button class="sort-dir" onclick="setSortDir(this)" title="多い順">多</button></div>
+            <div class="sort-group"><span class="sort-group-label">年式</span><button class="sort-dir" onclick="setSortDir(this)" title="古い順">古</button><button class="sort-dir" onclick="setSortDir(this)" title="新しい順">新</button></div>
+            <div class="sort-group"><span class="sort-group-label">掲載時期</span><button class="sort-dir" onclick="setSortDir(this)" title="新着順">新</button><button class="sort-dir" onclick="setSortDir(this)" title="古い順">古</button></div>
+            <div class="sort-group"><span class="sort-group-label">排気量</span><button class="sort-dir" onclick="setSortDir(this)" title="多い順">多</button><button class="sort-dir" onclick="setSortDir(this)" title="少ない順">少</button></div>
+            <div class="sort-group"><span class="sort-group-label">鑑定点</span><button class="sort-dir" onclick="setSortDir(this)" title="低い順">低</button><button class="sort-dir" onclick="setSortDir(this)" title="高い順">高</button></div>
+            <span class="w-px h-7 flex-shrink-0 mx-1" style="background:var(--line);"></span>
+            <div class="filter-group"><span class="sort-group-label">車検</span><button class="filter-dir" onclick="setFilterDir(this)" title="車検付で絞り込み">付</button><button class="filter-dir" onclick="setFilterDir(this)" title="車検無で絞り込み">無</button></div>
+            <div class="filter-group"><span class="sort-group-label">修復歴</span><button class="filter-dir" onclick="setFilterDir(this)" title="修復歴なしで絞り込み">無</button><button class="filter-dir" onclick="setFilterDir(this)" title="修復歴ありで絞り込み">有</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VEHICLE LIST（カードで囲まず水平線で区切るリスト） ── -->
+      <div id="vehicleList">
+
+        <!-- CARD 1 -->
+        <article class="v-card" onclick="openPresent()">
+          <div class="flex flex-col sm:flex-row">
+            <!-- image -->
+            <div class="v-media flex-shrink-0">
+              <div class="v-img">
+                <img src="https://loremflickr.com/600/340/car?lock=1" alt="車両イメージ" loading="lazy">
+                <span class="absolute top-2 left-2 badge b-new">NEW</span>
+                <span class="absolute bottom-2 right-2 text-[10px] text-white px-2 py-0.5 rounded" style="background:rgba(0,32,71,0.7);">📷 32枚</span>
+                <button class="fav-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center" onclick="event.stopPropagation(); toggleFav(this)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A0AE" stroke-width="2" class="fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+              </div>
+              <div class="grid grid-cols-3 gap-1 mt-1">
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=2" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=3" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=4" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=5" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=6" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=7" alt="" loading="lazy"><span class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white" style="background:rgba(0,32,71,0.5);">+26</span></div>
+              </div>
+            </div>
+
+            <!-- body -->
+            <div class="flex-1 p-4 min-w-0">
+              <div class="flex items-start justify-between gap-3 mb-2">
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-xs text-[var(--gray-muted)]">トヨタ</span>
+                    <span class="badge b-warranty">保証付</span>
+                    <span class="badge b-oneowner">ワンオーナー</span>
+                    <span class="badge b-oneowner">禁煙車</span>
+                  </div>
+                  <h3 class="text-xl font-bold leading-snug truncate">ハリアー Z 2.0 ターボ 4WD 純正ナビ 革シート</h3>
+                </div>
+                <div class="rating-badge flex-shrink-0">
+                  <span class="text-sm font-bold leading-none">4.5</span>
+                  <span class="text-[8px] opacity-70 mt-0.5">鑑定点</span>
+                </div>
+              </div>
+
+              <div class="flex gap-4">
+                <!-- spec table -->
+                <table class="spec-table flex-1">
+                  <tr><td class="k">年式</td><td class="v v-emph">2022(R4)</td><td class="k">車検</td><td class="v">2026/03</td></tr>
+                  <tr><td class="k">走行</td><td class="v v-emph">2.1万km</td><td class="k">修復歴</td><td class="v" style="color:var(--good);">なし</td></tr>
+                  <tr><td class="k">排気量</td><td class="v">1986cc</td><td class="k">ミッション</td><td class="v">AT</td></tr>
+                  <tr><td class="k">駆動</td><td class="v">4WD</td><td class="k">カラー</td><td class="v">ブラック</td></tr>
+                  <tr><td class="k">乗車定員</td><td class="v">5名</td><td class="k"></td><td class="v"></td></tr>
+                </table>
+
+                <!-- price -->
+                <div class="flex-shrink-0 text-right pl-4 border-l border-[var(--line-soft)]" style="width:210px;">
+                  <div class="text-[11px] text-[var(--gray-muted)]">月々（72回）</div>
+                  <div class="text-[34px] font-bold leading-none tracking-tight" style="color:var(--navy);">¥41,600<span class="text-base font-bold">〜</span></div>
+                  <div class="text-[11px] text-[var(--gray-text)] mt-1 mb-2">4年(48回)なら ¥59,100/月</div>
+                  <div class="rounded-lg px-3 py-2 text-left" style="background:rgba(0,160,233,0.08);">
+                    <div class="flex items-baseline gap-1">
+                      <span class="text-[11px] font-bold" style="color:var(--sky-dark);">支払総額</span>
+                      <span class="text-[24px] font-bold leading-none tabular-nums" style="color:var(--sky-dark);">258.0<span class="text-sm">万円</span></span>
+                    </div>
+                    <div class="text-[10px] text-[var(--gray-text)] mt-0.5">車両本体 248.0万円</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- equips -->
+              <div class="flex items-center gap-1.5 flex-wrap mt-2.5 pt-2.5 border-t border-[var(--line-soft)]">
+                <span class="equip">🅿 バックカメラ</span>
+                <span class="equip">ETC2.0</span>
+                <span class="equip">LEDヘッド</span>
+                <span class="equip">本革シート</span>
+                <span class="equip">サンルーフ</span>
+                <span class="equip">衝突軽減B</span>
+                <span class="equip">+12</span>
+                <div class="ml-auto flex items-center gap-3">
+                  <div class="flex items-center gap-1 text-[11px] text-[var(--gray-text)]">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    4.8 · 東京オート渋谷店（東京都）
+                  </div>
+                  <button onclick="event.stopPropagation()" class="px-3 py-1.5 rounded-md text-white text-xs font-bold whitespace-nowrap" style="background:var(--sky-grad);">お客様に提案 ＋</button>
+                  <label class="compare-check" onclick="event.stopPropagation()"><input type="checkbox"> 比較</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 2 -->
+        <article class="v-card" onclick="openPresent()">
+          <div class="flex flex-col sm:flex-row">
+            <div class="v-media flex-shrink-0">
+              <div class="v-img">
+                <img src="https://loremflickr.com/600/340/car?lock=11" alt="車両イメージ" loading="lazy">
+                <span class="absolute top-2 left-2 badge b-deal">価格DOWN</span>
+                <span class="absolute bottom-2 right-2 text-[10px] text-white px-2 py-0.5 rounded" style="background:rgba(0,32,71,0.7);">📷 45枚</span>
+                <button class="fav-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center" onclick="event.stopPropagation(); toggleFav(this)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A0AE" stroke-width="2" class="fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+              </div>
+              <div class="grid grid-cols-3 gap-1 mt-1">
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=12" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=13" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=14" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=15" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=16" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=17" alt="" loading="lazy"><span class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white" style="background:rgba(0,32,71,0.5);">+39</span></div>
+              </div>
+            </div>
+            <div class="flex-1 p-4 min-w-0">
+              <div class="flex items-start justify-between gap-3 mb-2">
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-xs text-[var(--gray-muted)]">ホンダ</span>
+                    <span class="badge b-warranty">保証付</span>
+                    <span class="badge b-oneowner">禁煙車</span>
+                  </div>
+                  <h3 class="text-xl font-bold leading-snug truncate">N-BOX カスタム G・L ターボ 両側電動 純正ナビ</h3>
+                </div>
+                <div class="rating-badge flex-shrink-0">
+                  <span class="text-sm font-bold leading-none">4.0</span>
+                  <span class="text-[8px] opacity-70 mt-0.5">鑑定点</span>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <table class="spec-table flex-1">
+                  <tr><td class="k">年式</td><td class="v v-emph">2021(R3)</td><td class="k">車検</td><td class="v">2025/11</td></tr>
+                  <tr><td class="k">走行</td><td class="v v-emph">1.8万km</td><td class="k">修復歴</td><td class="v" style="color:var(--good);">なし</td></tr>
+                  <tr><td class="k">排気量</td><td class="v">660cc</td><td class="k">ミッション</td><td class="v">CVT</td></tr>
+                  <tr><td class="k">駆動</td><td class="v">FF</td><td class="k">カラー</td><td class="v">ホワイトパール</td></tr>
+                  <tr><td class="k">乗車定員</td><td class="v">4名</td><td class="k"></td><td class="v"></td></tr>
+                </table>
+                <div class="flex-shrink-0 text-right pl-4 border-l border-[var(--line-soft)]" style="width:210px;">
+                  <div class="text-[11px] text-[var(--gray-muted)]">月々（72回）</div>
+                  <div class="text-[34px] font-bold leading-none tracking-tight" style="color:var(--navy);">¥22,900<span class="text-base font-bold">〜</span></div>
+                  <div class="text-[11px] text-[var(--gray-text)] mt-1 mb-2">4年(48回)なら ¥32,500/月</div>
+                  <div class="rounded-lg px-3 py-2 text-left" style="background:rgba(0,160,233,0.08);">
+                    <div class="flex items-baseline gap-1">
+                      <span class="text-[11px] font-bold" style="color:var(--sky-dark);">支払総額</span>
+                      <span class="text-[24px] font-bold leading-none tabular-nums" style="color:var(--sky-dark);">142.0<span class="text-sm">万円</span></span>
+                    </div>
+                    <div class="text-[10px] text-[var(--gray-text)] mt-0.5">車両本体 129.0万円</div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap mt-2.5 pt-2.5 border-t border-[var(--line-soft)]">
+                <span class="equip">両側電動ドア</span>
+                <span class="equip">バックカメラ</span>
+                <span class="equip">ETC</span>
+                <span class="equip">スマートキー</span>
+                <span class="equip">アイドリングS</span>
+                <span class="equip">+8</span>
+                <div class="ml-auto flex items-center gap-3">
+                  <div class="flex items-center gap-1 text-[11px] text-[var(--gray-text)]">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    4.6 · オートガレージ北大阪（大阪府）
+                  </div>
+                  <button onclick="event.stopPropagation()" class="px-3 py-1.5 rounded-md text-white text-xs font-bold whitespace-nowrap" style="background:var(--sky-grad);">お客様に提案 ＋</button>
+                  <label class="compare-check" onclick="event.stopPropagation()"><input type="checkbox"> 比較</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 3 -->
+        <article class="v-card" onclick="openPresent()">
+          <div class="flex flex-col sm:flex-row">
+            <div class="v-media flex-shrink-0">
+              <div class="v-img">
+                <img src="https://loremflickr.com/600/340/car?lock=21" alt="車両イメージ" loading="lazy">
+                <span class="absolute bottom-2 right-2 text-[10px] text-white px-2 py-0.5 rounded" style="background:rgba(0,32,71,0.7);">📷 28枚</span>
+                <button class="fav-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center" onclick="event.stopPropagation(); toggleFav(this)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#E8273A" stroke="#E8273A" stroke-width="2" class="fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+              </div>
+              <div class="grid grid-cols-3 gap-1 mt-1">
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=22" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=23" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=24" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=25" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=26" alt="" loading="lazy"></div>
+                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=27" alt="" loading="lazy"><span class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white" style="background:rgba(0,32,71,0.5);">+22</span></div>
+              </div>
+            </div>
+            <div class="flex-1 p-4 min-w-0">
+              <div class="flex items-start justify-between gap-3 mb-2">
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-xs text-[var(--gray-muted)]">トヨタ</span>
+                    <span class="badge b-warranty">1年保証</span>
+                    <span class="badge b-oneowner">ワンオーナー</span>
+                  </div>
+                  <h3 class="text-xl font-bold leading-snug truncate">アルファード 2.5 S Cパッケージ サンルーフ 後席モニター</h3>
+                </div>
+                <div class="rating-badge flex-shrink-0">
+                  <span class="text-sm font-bold leading-none">4.5</span>
+                  <span class="text-[8px] opacity-70 mt-0.5">鑑定点</span>
+                </div>
+              </div>
+              <div class="flex gap-4">
+                <table class="spec-table flex-1">
+                  <tr><td class="k">年式</td><td class="v v-emph">2023(R5)</td><td class="k">車検</td><td class="v">2026/08</td></tr>
+                  <tr><td class="k">走行</td><td class="v v-emph">0.8万km</td><td class="k">修復歴</td><td class="v" style="color:var(--good);">なし</td></tr>
+                  <tr><td class="k">排気量</td><td class="v">2493cc</td><td class="k">ミッション</td><td class="v">CVT</td></tr>
+                  <tr><td class="k">駆動</td><td class="v">FF</td><td class="k">カラー</td><td class="v">パール</td></tr>
+                  <tr><td class="k">乗車定員</td><td class="v">7名</td><td class="k"></td><td class="v"></td></tr>
+                </table>
+                <div class="flex-shrink-0 text-right pl-4 border-l border-[var(--line-soft)]" style="width:210px;">
+                  <div class="text-[11px] text-[var(--gray-muted)]">月々（72回）</div>
+                  <div class="text-[34px] font-bold leading-none tracking-tight" style="color:var(--navy);">¥96,300<span class="text-base font-bold">〜</span></div>
+                  <div class="text-[11px] text-[var(--gray-text)] mt-1 mb-2">4年(48回)なら ¥137,000/月</div>
+                  <div class="rounded-lg px-3 py-2 text-left" style="background:rgba(0,160,233,0.08);">
+                    <div class="flex items-baseline gap-1">
+                      <span class="text-[11px] font-bold" style="color:var(--sky-dark);">支払総額</span>
+                      <span class="text-[24px] font-bold leading-none tabular-nums" style="color:var(--sky-dark);">598.0<span class="text-sm">万円</span></span>
+                    </div>
+                    <div class="text-[10px] text-[var(--gray-text)] mt-0.5">車両本体 580.0万円</div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap mt-2.5 pt-2.5 border-t border-[var(--line-soft)]">
+                <span class="equip">サンルーフ</span>
+                <span class="equip">後席モニター</span>
+                <span class="equip">両側電動ドア</span>
+                <span class="equip">全方位カメラ</span>
+                <span class="equip">レーダークルーズ</span>
+                <span class="equip">+15</span>
+                <div class="ml-auto flex items-center gap-3">
+                  <div class="flex items-center gap-1 text-[11px] text-[var(--gray-text)]">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    4.9 · プレミアムカーズ名古屋（愛知県）
+                  </div>
+                  <button onclick="event.stopPropagation()" class="px-3 py-1.5 rounded-md text-white text-xs font-bold whitespace-nowrap" style="background:var(--sky-grad);">お客様に提案 ＋</button>
+                  <label class="compare-check" onclick="event.stopPropagation()"><input type="checkbox"> 比較</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- pagination -->
+      <div class="flex items-center justify-center gap-1.5 mt-6">
+        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] text-[var(--gray-muted)] flex items-center justify-center">‹</button>
+        <button class="w-9 h-9 rounded-lg text-white font-bold flex items-center justify-center" style="background:var(--sky-grad);">1</button>
+        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] hover:border-[var(--sky)] transition-colors flex items-center justify-center">2</button>
+        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] hover:border-[var(--sky)] transition-colors flex items-center justify-center">3</button>
+        <span class="px-2 text-[var(--gray-muted)]">…</span>
+        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] hover:border-[var(--sky)] transition-colors flex items-center justify-center">7,145</button>
+        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] hover:border-[var(--sky)] transition-colors flex items-center justify-center">›</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━ COMPARE BAR ━━━━━━━━━━ -->
+<div id="compareBar" class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[var(--line)] shadow-[0_-4px_20px_rgba(0,32,71,0.1)] translate-y-full transition-transform duration-300">
+  <div class="max-w-[1400px] mx-auto px-5 py-3 flex items-center gap-4">
+    <span class="text-sm font-bold whitespace-nowrap" style="color:var(--navy);">比較リスト</span>
+    <div class="flex flex-1 gap-3 overflow-x-auto">
+      <div class="flex-1 min-w-[120px] h-12 rounded-lg border border-dashed border-[var(--line)] flex items-center justify-center text-xs text-[var(--gray-muted)]">＋ 車両を追加</div>
+      <div class="flex-1 min-w-[120px] h-12 rounded-lg border border-dashed border-[var(--line)] flex items-center justify-center text-xs text-[var(--gray-muted)]">＋ 車両を追加</div>
+      <div class="flex-1 min-w-[120px] h-12 rounded-lg border border-dashed border-[var(--line)] flex items-center justify-center text-xs text-[var(--gray-muted)]">＋ 車両を追加</div>
+    </div>
+    <button class="px-6 py-2.5 rounded-lg text-white font-bold text-sm whitespace-nowrap" style="background:var(--sky-grad);">比較する</button>
+    <button onclick="toggleCompareBar(false)" class="text-[var(--gray-muted)]"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━ FILTER MODAL（左右ペインを覆う詳細絞り込み・左ペインと項目共有） ━━━━━━━━━━ -->
+<div id="filterModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,32,71,0); opacity:0; pointer-events:none; transition:opacity 0.25s;">
+  <div class="fm-panel bg-white rounded-2xl w-[94vw] max-w-5xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl" style="transform:scale(0.96); transition:transform 0.25s;">
+    <!-- header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-[var(--line)] flex-shrink-0">
+      <div>
+        <h2 class="text-lg font-bold" style="color:var(--navy);">詳細条件で絞り込む</h2>
+        <p class="text-[11px] text-[var(--gray-muted)]">左の絞り込みと項目・入力内容を共有しています</p>
+      </div>
+      <button onclick="closeFilterModal()" class="w-9 h-9 rounded-full hover:bg-[var(--light-gray)] flex items-center justify-center" style="color:var(--gray-muted);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+
+    <!-- body -->
+    <div class="overflow-y-auto px-6 py-5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+      <!-- メーカー・車種 -->
+      <div>
+        <div class="field-label">メーカー</div>
+        <select class="mb-3"><option>すべてのメーカー</option><option>トヨタ</option><option>ホンダ</option><option>日産</option><option>マツダ</option><option>スバル</option><option>スズキ</option><option>ダイハツ</option><option>三菱</option><option>レクサス</option></select>
+        <div class="field-label">車種</div>
+        <select><option>すべての車種</option><option>ハリアー</option><option>プリウス</option><option>アルファード</option><option>ヴォクシー</option></select>
+      </div>
+
+      <!-- 価格 -->
+      <div>
+        <div class="field-label">支払総額</div>
+        <div class="flex items-center gap-2 mb-3">
+          <select><option>下限なし</option><option>50万</option><option>100万</option><option>150万</option><option>200万</option></select>
+          <span class="text-[var(--gray-muted)]">〜</span>
+          <select><option>250万</option><option>300万</option><option>500万</option><option>上限なし</option></select>
+        </div>
+        <div class="field-label">月々支払い（ローン試算）</div>
+        <div class="flex items-center gap-2">
+          <select><option>指定なし</option><option>〜1万円</option><option>〜2万円</option><option>〜3万円</option><option>〜4万円</option><option>〜5万円</option><option>〜6万円</option><option>7万円以上</option></select>
+          <select><option>48回（4年）</option><option>72回（6年）</option></select>
+        </div>
+      </div>
+
+      <!-- ボディタイプ（全幅） -->
+      <div class="md:col-span-2">
+        <div class="field-label">ボディタイプ</div>
+        <div class="grid grid-cols-4 md:grid-cols-8 gap-2">
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 13h24M5 13l2-5h20l2 5M8 13v2M26 13v2"/><path d="M9 8l1-3h14v3"/></svg>軽</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 13h24M5 13l2-5h20l2 5M8 13v2M26 13v2"/><path d="M10 8l1.5-3h11l1.5 3"/></svg>コンパクト</button>
+          <button class="body-btn active" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l3-6h22l3 6M6 13v2M28 13v2"/><path d="M8 7l3-4h12l3 4"/></svg>SUV</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l2-7h24l2 7M6 13v2M28 13v2"/><rect x="7" y="3" width="20" height="3" rx="1"/></svg>ミニバン</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l2-6h24l2 6M6 13v2M28 13v2"/></svg>ステーションワゴン</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l3-6h22l3 6M6 13v2M28 13v2"/><path d="M9 7l2-4h12l2 4"/></svg>セダン</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l2-8h24l2 8M6 13v2M28 13v2"/></svg>その他</button>
+        </div>
+      </div>
+
+      <!-- 年式 -->
+      <div>
+        <div class="field-label">年式</div>
+        <div class="flex items-center gap-2">
+          <select><option>指定なし</option><option>2024年</option><option>2022年</option><option>2020年</option><option>2018年</option></select>
+          <span class="text-[var(--gray-muted)]">〜</span>
+          <select><option>最新</option></select>
+        </div>
+      </div>
+
+      <!-- 走行距離 -->
+      <div>
+        <div class="field-label">走行距離</div>
+        <div class="flex items-center gap-2">
+          <select><option>指定なし</option></select>
+          <span class="text-[var(--gray-muted)]">〜</span>
+          <select><option>3万km</option><option>5万km</option><option>7万km</option><option>10万km</option><option>指定なし</option></select>
+        </div>
+      </div>
+
+      <!-- 状態（全幅） -->
+      <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-4">
+        <div>
+          <div class="field-label">修復歴</div>
+          <div class="radio-group">
+            <label class="radio-pill"><input type="radio" name="m-repair" checked><span>問わない</span></label>
+            <label class="radio-pill"><input type="radio" name="m-repair"><span>修復歴なしのみ</span></label>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">車検</div>
+          <div class="radio-group">
+            <label class="radio-pill"><input type="radio" name="m-shaken" checked><span>問わない</span></label>
+            <label class="radio-pill"><input type="radio" name="m-shaken"><span>車検あり</span></label>
+            <label class="radio-pill"><input type="radio" name="m-shaken"><span>車検整備付</span></label>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">鑑定評価点</div>
+          <div class="radio-group">
+            <label class="radio-pill"><input type="radio" name="m-grade" checked><span>問わない</span></label>
+            <label class="radio-pill"><input type="radio" name="m-grade"><span>4点以上</span></label>
+            <label class="radio-pill"><input type="radio" name="m-grade"><span>4.5点以上</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ミッション -->
+      <div>
+        <div class="field-label">ミッション</div>
+        <div class="radio-group">
+          <label class="radio-pill"><input type="radio" name="m-mt" checked><span>問わない</span></label>
+          <label class="radio-pill"><input type="radio" name="m-mt"><span>AT</span></label>
+          <label class="radio-pill"><input type="radio" name="m-mt"><span>CVT</span></label>
+          <label class="radio-pill"><input type="radio" name="m-mt"><span>MT</span></label>
+        </div>
+      </div>
+
+      <!-- 駆動方式 -->
+      <div>
+        <div class="field-label">駆動方式</div>
+        <div class="radio-group">
+          <label class="radio-pill"><input type="radio" name="m-drive" checked><span>問わない</span></label>
+          <label class="radio-pill"><input type="radio" name="m-drive"><span>FF</span></label>
+          <label class="radio-pill"><input type="radio" name="m-drive"><span>FR</span></label>
+          <label class="radio-pill"><input type="radio" name="m-drive"><span>4WD</span></label>
+        </div>
+      </div>
+
+      <!-- 燃料 -->
+      <div>
+        <div class="field-label">燃料・動力</div>
+        <div class="check-grid grid-cols-3">
+          <label class="check-row"><input type="checkbox" checked> ガソリン</label>
+          <label class="check-row"><input type="checkbox"> ハイブリッド</label>
+          <label class="check-row"><input type="checkbox"> ディーゼル</label>
+          <label class="check-row"><input type="checkbox"> 電気（EV）</label>
+          <label class="check-row"><input type="checkbox"> PHEV</label>
+        </div>
+      </div>
+
+      <!-- 排気量・定員・ドア -->
+      <div>
+        <div class="field-label">排気量</div>
+        <select class="mb-3"><option>指定なし</option><option>〜660cc（軽）</option><option>〜1000cc</option><option>〜1500cc</option><option>〜2000cc</option><option>2000cc〜</option></select>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <div class="field-label">乗車定員</div>
+            <select><option>指定なし</option><option>4名</option><option>5名</option><option>7名</option><option>8名</option></select>
+          </div>
+          <div>
+            <div class="field-label">ドア数</div>
+            <select><option>指定なし</option><option>2ドア</option><option>3ドア</option><option>4ドア</option><option>5ドア</option></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- カラー（全幅） -->
+      <div class="md:col-span-2">
+        <div class="field-label">ボディカラー</div>
+        <div class="flex flex-wrap gap-2.5">
+          <span class="color-chip active" style="background:#1A1A1A;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#FFFFFF;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#C0C5CC;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#7A7E85;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#B11A2B;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#1E3A6E;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#3F6F46;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#8B6914;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#D9A441;" onclick="this.classList.toggle('active')"></span>
+        </div>
+      </div>
+
+      <!-- 装備（全幅・内部3カラム） -->
+      <div class="md:col-span-2">
+        <div class="field-label">装備・オプション</div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-6">
+          <label class="check-row"><input type="checkbox"> カーナビ（純正/社外）</label>
+          <label class="check-row"><input type="checkbox"> バックカメラ</label>
+          <label class="check-row"><input type="checkbox"> 全方位モニター</label>
+          <label class="check-row"><input type="checkbox"> ETC / ETC2.0</label>
+          <label class="check-row"><input type="checkbox"> ドライブレコーダー</label>
+          <label class="check-row"><input type="checkbox"> 両側電動スライドドア</label>
+          <label class="check-row"><input type="checkbox"> サンルーフ</label>
+          <label class="check-row"><input type="checkbox"> 本革シート</label>
+          <label class="check-row"><input type="checkbox"> シートヒーター</label>
+          <label class="check-row"><input type="checkbox"> LEDヘッドライト</label>
+          <label class="check-row"><input type="checkbox"> 衝突被害軽減ブレーキ</label>
+          <label class="check-row"><input type="checkbox"> レーダークルーズ</label>
+          <label class="check-row"><input type="checkbox"> アイドリングストップ</label>
+          <label class="check-row"><input type="checkbox"> スマートキー</label>
+        </div>
+      </div>
+
+      <!-- 保証・条件 -->
+      <div>
+        <div class="field-label">保証・条件</div>
+        <label class="check-row"><input type="checkbox"> 保証付き</label>
+        <label class="check-row"><input type="checkbox"> 法定整備付き</label>
+        <label class="check-row"><input type="checkbox"> ワンオーナー車</label>
+        <label class="check-row"><input type="checkbox"> 禁煙車</label>
+        <label class="check-row"><input type="checkbox"> 新車保証継承可</label>
+      </div>
+
+      <!-- エリア -->
+      <div>
+        <div class="field-label">エリア</div>
+        <select class="mb-3"><option>全国</option><option>北海道・東北</option><option>関東</option><option>中部</option><option>近畿</option><option>中国・四国</option><option>九州・沖縄</option></select>
+        <select><option>都道府県を選択</option><option>東京都</option><option>神奈川県</option><option>大阪府</option><option>愛知県</option></select>
+      </div>
+
+    </div>
+
+    <!-- footer -->
+    <div class="flex items-center justify-between px-6 py-4 border-t border-[var(--line)] flex-shrink-0">
+      <button onclick="closeFilterModal()" class="text-sm font-bold" style="color:var(--gray-muted);">条件をリセット</button>
+      <div class="flex items-center gap-4">
+        <div class="leading-none"><span class="text-[34px] font-bold tracking-tight tabular-nums" style="color:var(--sky);">142,890</span><span class="text-lg font-bold ml-0.5" style="color:var(--navy);">台</span></div>
+        <button onclick="closeFilterModal()" class="px-8 py-3.5 rounded-xl text-white font-bold text-base" style="background:var(--sky-grad);">この条件で見る</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━ FILTER MODAL（左右ペインを覆う詳細絞り込み・左ペインと項目共有） ━━━━━━━━━━ -->
+<div id="filterModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,32,71,0); opacity:0; pointer-events:none; transition:opacity 0.25s, background 0.25s;">
+  <div class="fm-panel bg-white rounded-2xl w-[94vw] max-w-5xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl" style="transform:scale(0.96); transition:transform 0.25s;">
+    <!-- header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-[var(--line)] flex-shrink-0">
+      <div>
+        <h2 class="text-lg font-bold" style="color:var(--navy);">詳細条件で絞り込む</h2>
+        <p class="text-[11px] text-[var(--gray-muted)]">左の絞り込みと項目・入力内容を共有しています</p>
+      </div>
+      <button onclick="closeFilterModal()" class="w-9 h-9 rounded-full hover:bg-[var(--light-gray)] flex items-center justify-center" style="color:var(--gray-muted);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+
+    <!-- body -->
+    <div class="overflow-y-auto px-6 py-5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+      <!-- メーカー・車種 -->
+      <div>
+        <div class="field-label">メーカー</div>
+        <select class="mb-3"><option>すべてのメーカー</option><option>トヨタ</option><option>ホンダ</option><option>日産</option><option>マツダ</option><option>スバル</option><option>スズキ</option><option>ダイハツ</option><option>三菱</option><option>レクサス</option></select>
+        <div class="field-label">車種</div>
+        <select><option>すべての車種</option><option>ハリアー</option><option>プリウス</option><option>アルファード</option><option>ヴォクシー</option></select>
+      </div>
+
+      <!-- 価格 -->
+      <div>
+        <div class="field-label">支払総額</div>
+        <div class="flex items-center gap-2 mb-3">
+          <select><option>下限なし</option><option>50万</option><option>100万</option><option>150万</option><option>200万</option></select>
+          <span class="text-[var(--gray-muted)]">〜</span>
+          <select><option>250万</option><option>300万</option><option>500万</option><option>上限なし</option></select>
+        </div>
+        <div class="field-label">月々支払い（ローン試算）</div>
+        <div class="flex items-center gap-2">
+          <select><option>指定なし</option><option>〜1万円</option><option>〜2万円</option><option>〜3万円</option><option>〜4万円</option><option>〜5万円</option><option>〜6万円</option><option>7万円以上</option></select>
+          <select><option>48回（4年）</option><option>72回（6年）</option></select>
+        </div>
+      </div>
+
+      <!-- ボディタイプ（全幅） -->
+      <div class="md:col-span-2">
+        <div class="field-label">ボディタイプ</div>
+        <div class="grid grid-cols-4 md:grid-cols-8 gap-2">
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 13h24M5 13l2-5h20l2 5M8 13v2M26 13v2"/><path d="M9 8l1-3h14v3"/></svg>軽</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 13h24M5 13l2-5h20l2 5M8 13v2M26 13v2"/><path d="M10 8l1.5-3h11l1.5 3"/></svg>コンパクト</button>
+          <button class="body-btn active" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l3-6h22l3 6M6 13v2M28 13v2"/><path d="M8 7l3-4h12l3 4"/></svg>SUV</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l2-7h24l2 7M6 13v2M28 13v2"/><rect x="7" y="3" width="20" height="3" rx="1"/></svg>ミニバン</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l2-6h24l2 6M6 13v2M28 13v2"/></svg>ステーションワゴン</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l3-6h22l3 6M6 13v2M28 13v2"/><path d="M9 7l2-4h12l2 4"/></svg>セダン</button>
+          <button class="body-btn" onclick="this.classList.toggle('active')"><svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 13h28M3 13l2-8h24l2 8M6 13v2M28 13v2"/></svg>その他</button>
+        </div>
+      </div>
+
+      <!-- 年式 -->
+      <div>
+        <div class="field-label">年式</div>
+        <div class="flex items-center gap-2">
+          <select><option>指定なし</option><option>2024年</option><option>2022年</option><option>2020年</option><option>2018年</option></select>
+          <span class="text-[var(--gray-muted)]">〜</span>
+          <select><option>最新</option></select>
+        </div>
+      </div>
+
+      <!-- 走行距離 -->
+      <div>
+        <div class="field-label">走行距離</div>
+        <div class="flex items-center gap-2">
+          <select><option>指定なし</option></select>
+          <span class="text-[var(--gray-muted)]">〜</span>
+          <select><option>3万km</option><option>5万km</option><option>7万km</option><option>10万km</option><option>指定なし</option></select>
+        </div>
+      </div>
+
+      <!-- 状態（全幅・修復歴/車検/鑑定点） -->
+      <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-4">
+        <div>
+          <div class="field-label">修復歴</div>
+          <div class="radio-group">
+            <label class="radio-pill"><input type="radio" name="m-repair" checked><span>問わない</span></label>
+            <label class="radio-pill"><input type="radio" name="m-repair"><span>修復歴なし</span></label>
+            <label class="radio-pill"><input type="radio" name="m-repair"><span>修復歴あり</span></label>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">車検</div>
+          <div class="radio-group">
+            <label class="radio-pill"><input type="radio" name="m-shaken" checked><span>問わない</span></label>
+            <label class="radio-pill"><input type="radio" name="m-shaken"><span>車検あり</span></label>
+            <label class="radio-pill"><input type="radio" name="m-shaken"><span>車検なし</span></label>
+            <label class="radio-pill"><input type="radio" name="m-shaken"><span>車検整備付</span></label>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">鑑定評価点</div>
+          <div class="radio-group">
+            <label class="radio-pill"><input type="radio" name="m-grade" checked><span>問わない</span></label>
+            <label class="radio-pill"><input type="radio" name="m-grade"><span>4点以上</span></label>
+            <label class="radio-pill"><input type="radio" name="m-grade"><span>4.5点以上</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ミッション -->
+      <div>
+        <div class="field-label">ミッション</div>
+        <div class="radio-group">
+          <label class="radio-pill"><input type="radio" name="m-mt" checked><span>問わない</span></label>
+          <label class="radio-pill"><input type="radio" name="m-mt"><span>AT</span></label>
+          <label class="radio-pill"><input type="radio" name="m-mt"><span>CVT</span></label>
+          <label class="radio-pill"><input type="radio" name="m-mt"><span>MT</span></label>
+        </div>
+      </div>
+
+      <!-- 駆動方式 -->
+      <div>
+        <div class="field-label">駆動方式</div>
+        <div class="radio-group">
+          <label class="radio-pill"><input type="radio" name="m-drive" checked><span>問わない</span></label>
+          <label class="radio-pill"><input type="radio" name="m-drive"><span>FF</span></label>
+          <label class="radio-pill"><input type="radio" name="m-drive"><span>FR</span></label>
+          <label class="radio-pill"><input type="radio" name="m-drive"><span>4WD</span></label>
+        </div>
+      </div>
+
+      <!-- 燃料 -->
+      <div>
+        <div class="field-label">燃料・動力</div>
+        <div class="check-grid grid-cols-3">
+          <label class="check-row"><input type="checkbox" checked> ガソリン</label>
+          <label class="check-row"><input type="checkbox"> ハイブリッド</label>
+          <label class="check-row"><input type="checkbox"> ディーゼル</label>
+          <label class="check-row"><input type="checkbox"> 電気（EV）</label>
+          <label class="check-row"><input type="checkbox"> PHEV</label>
+        </div>
+      </div>
+
+      <!-- 排気量・定員・ドア -->
+      <div>
+        <div class="field-label">排気量</div>
+        <select class="mb-3"><option>指定なし</option><option>〜660cc（軽）</option><option>〜1000cc</option><option>〜1500cc</option><option>〜2000cc</option><option>2000cc〜</option></select>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <div class="field-label">乗車定員</div>
+            <select><option>指定なし</option><option>4名</option><option>5名</option><option>7名</option><option>8名</option></select>
+          </div>
+          <div>
+            <div class="field-label">ドア数</div>
+            <select><option>指定なし</option><option>2ドア</option><option>3ドア</option><option>4ドア</option><option>5ドア</option></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- カラー（全幅） -->
+      <div class="md:col-span-2">
+        <div class="field-label">ボディカラー</div>
+        <div class="flex flex-wrap gap-2.5">
+          <span class="color-chip active" style="background:#1A1A1A;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#FFFFFF;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#C0C5CC;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#7A7E85;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#B11A2B;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#1E3A6E;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#3F6F46;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#8B6914;" onclick="this.classList.toggle('active')"></span>
+          <span class="color-chip" style="background:#D9A441;" onclick="this.classList.toggle('active')"></span>
+        </div>
+      </div>
+
+      <!-- 装備（全幅・内部3カラム） -->
+      <div class="md:col-span-2">
+        <div class="field-label">装備・オプション</div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-6">
+          <label class="check-row"><input type="checkbox"> カーナビ（純正/社外）</label>
+          <label class="check-row"><input type="checkbox"> バックカメラ</label>
+          <label class="check-row"><input type="checkbox"> 全方位モニター</label>
+          <label class="check-row"><input type="checkbox"> ETC / ETC2.0</label>
+          <label class="check-row"><input type="checkbox"> ドライブレコーダー</label>
+          <label class="check-row"><input type="checkbox"> 両側電動スライドドア</label>
+          <label class="check-row"><input type="checkbox"> サンルーフ</label>
+          <label class="check-row"><input type="checkbox"> 本革シート</label>
+          <label class="check-row"><input type="checkbox"> シートヒーター</label>
+          <label class="check-row"><input type="checkbox"> LEDヘッドライト</label>
+          <label class="check-row"><input type="checkbox"> 衝突被害軽減ブレーキ</label>
+          <label class="check-row"><input type="checkbox"> レーダークルーズ</label>
+          <label class="check-row"><input type="checkbox"> アイドリングストップ</label>
+          <label class="check-row"><input type="checkbox"> スマートキー</label>
+        </div>
+      </div>
+
+      <!-- 保証・条件 -->
+      <div>
+        <div class="field-label">保証・条件</div>
+        <label class="check-row"><input type="checkbox"> 保証付き</label>
+        <label class="check-row"><input type="checkbox"> 法定整備付き</label>
+        <label class="check-row"><input type="checkbox"> ワンオーナー車</label>
+        <label class="check-row"><input type="checkbox"> 禁煙車</label>
+        <label class="check-row"><input type="checkbox"> 新車保証継承可</label>
+      </div>
+
+      <!-- エリア -->
+      <div>
+        <div class="field-label">エリア</div>
+        <select class="mb-3"><option>全国</option><option>北海道・東北</option><option>関東</option><option>中部</option><option>近畿</option><option>中国・四国</option><option>九州・沖縄</option></select>
+        <select><option>都道府県を選択</option><option>東京都</option><option>神奈川県</option><option>大阪府</option><option>愛知県</option></select>
+      </div>
+
+    </div>
+
+    <!-- footer -->
+    <div class="flex items-center justify-between px-6 py-4 border-t border-[var(--line)] flex-shrink-0">
+      <button onclick="closeFilterModal()" class="text-sm font-bold" style="color:var(--gray-muted);">条件をリセット</button>
+      <div class="flex items-center gap-4">
+        <div class="leading-none"><span class="text-[34px] font-bold tracking-tight tabular-nums" style="color:var(--sky);">142,890</span><span class="text-lg font-bold ml-0.5" style="color:var(--navy);">台</span></div>
+        <button onclick="closeFilterModal()" class="px-8 py-3.5 rounded-xl text-white font-bold text-base" style="background:var(--sky-grad);">この条件で見る</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━ 商談プレゼンモード（Zoom画面共有用・大型単一車両ビュー）━━━━━━━━━━ -->
+<div id="presentModal" class="fixed inset-0 z-[60]" style="opacity:0; pointer-events:none; transition:opacity 0.3s;">
+  <div class="pm-topbar">
+    <div class="pm-brand">maguro<span>商談プレゼン</span></div>
+    <div class="pm-hint">📱 スマホは横向きにすると見やすくなります</div>
+    <button class="pm-close" onclick="closePresent()">閉じる ✕</button>
+  </div>
+
+  <div class="pm-body">
+    <!-- 写真（主役） -->
+    <div class="pm-photo-col">
+      <div class="pm-photo">
+        <img id="pmMainImg" src="https://loremflickr.com/1200/800/car?lock=1" alt="車両イメージ">
+        <span class="pm-photo-badge">トヨタ ハリアー</span>
+      </div>
+      <div class="pm-thumbs">
+        <div class="active" onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/1200/800/car?lock=1" alt=""></div>
+        <div onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/400/300/car?lock=2" alt=""></div>
+        <div onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/400/300/car?lock=3" alt=""></div>
+        <div onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/400/300/car?lock=4" alt=""></div>
+        <div onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/400/300/car?lock=5" alt=""></div>
+      </div>
+    </div>
+
+    <!-- 情報（核情報を大きく・高コントラストで） -->
+    <div class="pm-info-col">
+      <div>
+        <div class="pm-maker">トヨタ</div>
+        <div class="pm-name">ハリアー Z 2.0 ターボ 4WD 純正ナビ 革シート</div>
+      </div>
+
+      <div class="pm-badges">
+        <span class="pm-badge good">✓ 修復歴なし</span>
+        <span class="pm-badge sky">🛡 1年保証付き</span>
+        <span class="pm-badge plain">ワンオーナー</span>
+        <span class="pm-badge plain">禁煙車</span>
+      </div>
+
+      <div class="pm-price">
+        <div class="pm-price-left">
+          <div class="lbl-total">月々（72回）</div>
+          <div class="total">¥41,600<span>/月〜</span></div>
+          <div class="sub">4年（48回）なら ¥59,100/月</div>
+        </div>
+        <div class="pm-price-right">
+          <div class="total-lbl">支払総額</div>
+          <div class="total-amt">258.0<span>万円</span></div>
+          <div class="total-body">車両本体 248.0万円</div>
+        </div>
+      </div>
+
+      <div class="pm-specs">
+        <div class="pm-spec"><div class="v">2022</div><div class="k">年式 (R4)</div></div>
+        <div class="pm-spec"><div class="v">2.1万</div><div class="k">走行km</div></div>
+        <div class="pm-spec"><div class="v good">なし</div><div class="k">修復歴</div></div>
+        <div class="pm-spec"><div class="v">4.5</div><div class="k">鑑定点</div></div>
+      </div>
+
+      <div class="pm-report">
+        <div class="head">
+          <span class="t">車両状態レポート</span>
+          <span class="score">総合 4.5点</span>
+        </div>
+        <div class="row"><span class="lbl">外装</span><span class="track"><span class="fill" style="width:90%; background:var(--good);"></span></span><span class="rk">A</span></div>
+        <div class="row"><span class="lbl">内装</span><span class="track"><span class="fill" style="width:85%; background:var(--good);"></span></span><span class="rk">A</span></div>
+        <div class="row"><span class="lbl">タイヤ残溝</span><span class="track"><span class="fill" style="width:70%; background:var(--sky-grad);"></span></span><span class="rk">7分山</span></div>
+        <div class="row"><span class="lbl">機関</span><span class="track"><span class="fill" style="width:95%; background:var(--good);"></span></span><span class="rk">良好</span></div>
+      </div>
+
+      <div class="pm-shop">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        評価4.8 ・ 東京オート渋谷店（東京都）
+      </div>
+
+      <div class="pm-cta">
+        <button class="propose">この車を お客様に提案 ＋</button>
+        <button class="fav" title="お気に入り">♡</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleAcc(head){
+    const body = head.nextElementSibling;
+    const arrow = head.querySelector('.acc-arrow');
+    if(body.style.maxHeight && body.style.maxHeight !== '0px'){ body.style.maxHeight='0px'; arrow.style.transform='rotate(-90deg)'; }
+    else { body.style.maxHeight='1000px'; arrow.style.transform='rotate(0)'; }
+  }
+  function toggleFav(btn){
+    const i = btn.querySelector('.fav-icon');
+    if(i.getAttribute('fill')==='none'){ i.setAttribute('fill','#E8273A'); i.setAttribute('stroke','#E8273A'); }
+    else { i.setAttribute('fill','none'); i.setAttribute('stroke','#94A0AE'); }
+  }
+  function toggleCompareBar(open){
+    document.getElementById('compareBar').classList.toggle('translate-y-full', !open);
+  }
+  // ── 商談プレゼンモード（車両クリックで直接起動。Zoom画面共有でお客様がスマホ視聴する前提の大型表示）──
+  function openPresent(){
+    document.body.style.overflow='hidden';
+    const m=document.getElementById('presentModal');
+    m.style.opacity='1'; m.style.pointerEvents='auto';
+  }
+  function closePresent(){
+    const m=document.getElementById('presentModal');
+    m.style.opacity='0'; m.style.pointerEvents='none';
+    document.body.style.overflow='';
+  }
+  function pmSwapPhoto(el){
+    const main=document.getElementById('pmMainImg'), img=el.querySelector('img');
+    if(main && img) main.src=img.src;
+    el.parentElement.querySelectorAll('div').forEach(d=>d.classList.remove('active'));
+    el.classList.add('active');
+  }
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){
+      const m=document.getElementById('presentModal');
+      if(m && m.style.pointerEvents==='auto') closePresent();
+    }
+  });
+  function openFilterModal(){
+    document.body.style.overflow='hidden';
+    const m=document.getElementById('filterModal');
+    m.style.background='rgba(0,32,71,0.6)'; m.style.opacity='1'; m.style.pointerEvents='auto';
+    m.querySelector('.fm-panel').style.transform='scale(1)';
+    m.onclick=e=>{ if(e.target===m) closeFilterModal(); };
+  }
+  function syncFilterModalToSidebar(){
+    // モーダルで設定した条件を左ペインへ引き継ぐ（両者で項目を共有）
+    ['repair','shaken','mt','drive','grade'].forEach(name=>{
+      const ms=[...document.querySelectorAll('input[name="m-'+name+'"]')];
+      const idx=ms.findIndex(r=>r.checked);
+      const sides=document.querySelectorAll('input[name="'+name+'"]');
+      if(idx>=0 && sides[idx]) sides[idx].checked=true;
+    });
+    const sb=document.querySelectorAll('aside .body-btn'), mb=document.querySelectorAll('#filterModal .body-btn');
+    mb.forEach((b,i)=>{ if(sb[i]) sb[i].classList.toggle('active', b.classList.contains('active')); });
+    const sc=document.querySelectorAll('aside .color-chip'), mc=document.querySelectorAll('#filterModal .color-chip');
+    mc.forEach((c,i)=>{ if(sc[i]) sc[i].classList.toggle('active', c.classList.contains('active')); });
+  }
+  function syncSidebarToFilterModal(){
+    ['repair','shaken','mt','drive','grade'].forEach(name=>{
+      const sides=[...document.querySelectorAll('input[name="'+name+'"]')];
+      const idx=sides.findIndex(r=>r.checked);
+      const ms=document.querySelectorAll('input[name="m-'+name+'"]');
+      if(idx>=0 && ms[idx]) ms[idx].checked=true;
+    });
+    const sb=document.querySelectorAll('aside .body-btn'), mb=document.querySelectorAll('#filterModal .body-btn');
+    sb.forEach((b,i)=>{ if(mb[i]) mb[i].classList.toggle('active', b.classList.contains('active')); });
+    const sc=document.querySelectorAll('aside .color-chip'), mc=document.querySelectorAll('#filterModal .color-chip');
+    sc.forEach((c,i)=>{ if(mc[i]) mc[i].classList.toggle('active', c.classList.contains('active')); });
+  }
+  function closeFilterModal(){
+    document.body.style.overflow='';
+    syncFilterModalToSidebar();
+    const m=document.getElementById('filterModal');
+    m.style.background='rgba(0,32,71,0)'; m.style.opacity='0'; m.style.pointerEvents='none';
+    m.querySelector('.fm-panel').style.transform='scale(0.96)';
+  }
+  function clearAllSort(){ document.querySelectorAll('.sort-tab, .sort-dir').forEach(t=>t.classList.remove('active')); }
+  function setSort(el){ clearAllSort(); el.classList.add('active'); }
+  function setSortDir(el){ clearAllSort(); el.classList.add('active'); }
+  function setFilterDir(el){
+    const wasActive = el.classList.contains('active');
+    el.parentElement.querySelectorAll('.filter-dir').forEach(b=>b.classList.remove('active'));
+    if(!wasActive) el.classList.add('active');
+  }
+
+  // ── 追加車両データ（一覧をスクロールさせるため台数を増やす）──
+  const carBody = (o)=>`<path d="M20 72h160M20 72l14-30h132l14 30" stroke="#7A8694" stroke-width="2"/>${o}<circle cx="52" cy="75" r="11" stroke="#7A8694" stroke-width="2"/><circle cx="148" cy="75" r="11" stroke="#7A8694" stroke-width="2"/>`;
+  const roof = {
+    suv:'<path d="M40 42l12-18h96l12 18" stroke="#7A8694" stroke-width="2"/>',
+    sedan:'<path d="M44 42l8-16h96l8 16" stroke="#7A8694" stroke-width="2"/>',
+    van:'<rect x="44" y="26" width="112" height="14" rx="2" stroke="#7A8694" stroke-width="2"/>',
+    kei:'<path d="M48 42l6-14h92l6 14" stroke="#7A8694" stroke-width="2"/>'
+  };
+  const cars = [
+    {maker:'マツダ', name:'CX-5 XD Lパッケージ ディーゼル 4WD 本革', shape:'suv', badges:['保証付','禁煙車'], grade:'4.5',
+      year:'2021(R3)', shaken:'2025/12', km:'3.4万km', repair:'なし', cc:'2188cc', mt:'AT', drive:'4WD', color:'ソウルレッド', seats:'5名',
+      total:'248.0', body:'238.0', diff:'相場より 15万円お得', diffColor:'good', gauge:40,
+      equips:['本革シート','BOSEサウンド','レーダークルーズ','全方位カメラ'], more:10, shop:'マツダ認定 横浜', area:'神奈川県', rev:'4.7', pics:38, tag:''},
+    {maker:'スズキ', name:'スペーシア カスタム HYBRID XS 両側電動', shape:'kei', badges:['保証付','ワンオーナー','禁煙車'], grade:'4.0',
+      year:'2022(R4)', shaken:'2026/01', km:'1.2万km', repair:'なし', cc:'660cc', mt:'CVT', drive:'FF', color:'ホワイト', seats:'4名',
+      total:'158.0', body:'148.0', diff:'相場より 6万円お得', diffColor:'good', gauge:44,
+      equips:['両側電動ドア','全方位カメラ','スマートキー','LEDヘッド'], more:7, shop:'スズキアリーナ福岡', area:'福岡県', rev:'4.5', pics:29, tag:'new'},
+    {maker:'トヨタ', name:'プリウス A ツーリングセレクション 純正ナビ', shape:'sedan', badges:['保証付','ワンオーナー'], grade:'4.5',
+      year:'2023(R5)', shaken:'2026/05', km:'0.9万km', repair:'なし', cc:'1797cc', mt:'CVT', drive:'FF', color:'ブラック', seats:'5名',
+      total:'328.0', body:'315.0', diff:'相場とほぼ同等', diffColor:'sky', gauge:52,
+      equips:['純正ナビ','バックカメラ','BSM','ヘッドアップD'], more:11, shop:'トヨタモビリティ東京', area:'東京都', rev:'4.8', pics:42, tag:''},
+    {maker:'日産', name:'セレナ e-POWER ハイウェイスター V プロパイロット', shape:'van', badges:['保証付','禁煙車'], grade:'4.0',
+      year:'2021(R3)', shaken:'2025/10', km:'2.8万km', repair:'なし', cc:'1198cc', mt:'CVT', drive:'FF', color:'ホワイト', seats:'8名',
+      total:'268.0', body:'255.0', diff:'相場より 9万円お得', diffColor:'good', gauge:43,
+      equips:['プロパイロット','両側電動ドア','全方位カメラ','ETC2.0'], more:9, shop:'日産プリンス札幌', area:'北海道', rev:'4.6', pics:35, tag:''},
+    {maker:'スバル', name:'フォレスター Advance アイサイト X-MODE 4WD', shape:'suv', badges:['保証付','ワンオーナー','禁煙車'], grade:'4.5',
+      year:'2022(R4)', shaken:'2026/02', km:'2.0万km', repair:'なし', cc:'1995cc', mt:'CVT', drive:'4WD', color:'クリスタルホワイト', seats:'5名',
+      total:'298.0', body:'285.0', diff:'相場より 11万円お得', diffColor:'good', gauge:41,
+      equips:['アイサイト','本革シート','パワーシート','ルーフレール'], more:8, shop:'スバル中部', area:'愛知県', rev:'4.7', pics:31, tag:'new'},
+    {maker:'ホンダ', name:'ヴェゼル e:HEV PLaY パノラマルーフ', shape:'suv', badges:['保証付','ワンオーナー'], grade:'4.5',
+      year:'2023(R5)', shaken:'2026/07', km:'0.6万km', repair:'なし', cc:'1496cc', mt:'CVT', drive:'FF', color:'プレミアムサンライト', seats:'5名',
+      total:'318.0', body:'305.0', diff:'相場より 13万円お得', diffColor:'good', gauge:39,
+      equips:['パノラマルーフ','ホンダセンシング','本革','LEDフォグ'], more:12, shop:'ホンダカーズ大阪', area:'大阪府', rev:'4.8', pics:40, tag:''},
+    {maker:'レクサス', name:'RX450h version L サンルーフ マークレビンソン', shape:'suv', badges:['1年保証','ワンオーナー','禁煙車'], grade:'5.0',
+      year:'2022(R4)', shaken:'2026/04', km:'1.5万km', repair:'なし', cc:'3456cc', mt:'CVT', drive:'4WD', color:'ブラック', seats:'5名',
+      total:'748.0', body:'728.0', diff:'相場より 18万円高め', diffColor:'warn', gauge:70,
+      equips:['サンルーフ','マークレビンソン','本革','後席モニター'], more:16, shop:'レクサス銀座', area:'東京都', rev:'4.9', pics:48, tag:''},
+    {maker:'ダイハツ', name:'タント カスタム RS トップエディション 両側電動', shape:'kei', badges:['保証付','禁煙車'], grade:'4.0',
+      year:'2021(R3)', shaken:'2025/09', km:'2.2万km', repair:'なし', cc:'660cc', mt:'CVT', drive:'FF', color:'パールホワイト', seats:'4名',
+      total:'142.0', body:'132.0', diff:'相場より 7万円お得', diffColor:'good', gauge:42,
+      equips:['両側電動ドア','スマアシ','バックカメラ','LEDヘッド'], more:6, shop:'ダイハツ広島', area:'広島県', rev:'4.4', pics:27, tag:''},
+    {maker:'トヨタ', name:'ランドクルーザープラド TX Lパッケージ 7人乗 4WD', shape:'suv', badges:['1年保証','ワンオーナー'], grade:'4.5',
+      year:'2020(R2)', shaken:'2026/06', km:'4.8万km', repair:'なし', cc:'2754cc', mt:'AT', drive:'4WD', color:'ブラック', seats:'7名',
+      total:'528.0', body:'508.0', diff:'相場より 22万円お得', diffColor:'good', gauge:36,
+      equips:['本革シート','サンルーフ','全方位カメラ','ルーフレール'], more:14, shop:'トヨタ仙台', area:'宮城県', rev:'4.7', pics:44, tag:''}
+  ];
+
+  function vCard(c, idx){
+    const _lb = (idx+3)*10;
+    const _t = parseFloat(c.total)*10000;
+    const _fmt = n => (Math.round(n/100)*100).toLocaleString('ja-JP');
+    const m48 = _fmt(_t*1.10/48);  // 4年・金利概算込み
+    const m72 = _fmt(_t*1.16/72);  // 6年・金利概算込み
+    const tagHtml = c.tag==='new' ? '<span class="absolute top-2 left-2 badge b-new">NEW</span>'
+      : c.tag==='deal' ? '<span class="absolute top-2 left-2 badge b-deal">価格DOWN</span>' : '';
+    const badgeHtml = c.badges.map(b=>{
+      const cls = b.includes('保証') ? 'b-warranty' : 'b-oneowner';
+      return `<span class="badge ${cls}">${b}</span>`;
+    }).join('');
+    const equipHtml = c.equips.map(e=>`<span class="equip">${e}</span>`).join('') + `<span class="equip">+${c.more}</span>`;
+    return `
+    <article class="v-card" onclick="openPresent()">
+      <div class="flex flex-col sm:flex-row">
+        <div class="v-media flex-shrink-0">
+          <div class="v-img">
+            <img src="https://loremflickr.com/600/340/car?lock=${_lb+1}" alt="車両イメージ" loading="lazy">
+            ${tagHtml}
+            <span class="absolute bottom-2 right-2 text-[10px] text-white px-2 py-0.5 rounded" style="background:rgba(0,32,71,0.7);">📷 ${c.pics}枚</span>
+            <button class="fav-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center" onclick="event.stopPropagation(); toggleFav(this)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A0AE" stroke-width="2" class="fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+          <div class="grid grid-cols-3 gap-1 mt-1">
+            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+2}" alt="" loading="lazy"></div>
+            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+3}" alt="" loading="lazy"></div>
+            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+4}" alt="" loading="lazy"></div>
+            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+5}" alt="" loading="lazy"></div>
+            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+6}" alt="" loading="lazy"></div>
+            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+7}" alt="" loading="lazy"><span class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white" style="background:rgba(0,32,71,0.5);">+${c.pics-6}</span></div>
+          </div>
+        </div>
+        <div class="flex-1 p-4 min-w-0">
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <span class="text-xs text-[var(--gray-muted)]">${c.maker}</span>${badgeHtml}
+              </div>
+              <h3 class="text-xl font-bold leading-snug truncate">${c.name}</h3>
+            </div>
+            <div class="rating-badge flex-shrink-0">
+              <span class="text-sm font-bold leading-none">${c.grade}</span><span class="text-[8px] opacity-70 mt-0.5">鑑定点</span>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <table class="spec-table flex-1">
+              <tr><td class="k">年式</td><td class="v v-emph">${c.year}</td><td class="k">車検</td><td class="v">${c.shaken}</td></tr>
+              <tr><td class="k">走行</td><td class="v v-emph">${c.km}</td><td class="k">修復歴</td><td class="v" style="color:var(--good);">${c.repair}</td></tr>
+              <tr><td class="k">排気量</td><td class="v">${c.cc}</td><td class="k">ミッション</td><td class="v">${c.mt}</td></tr>
+              <tr><td class="k">駆動</td><td class="v">${c.drive}</td><td class="k">カラー</td><td class="v">${c.color}</td></tr>
+              <tr><td class="k">乗車定員</td><td class="v">${c.seats}</td><td class="k"></td><td class="v"></td></tr>
+            </table>
+            <div class="flex-shrink-0 text-right pl-4 border-l border-[var(--line-soft)]" style="width:210px;">
+              <div class="text-[11px] text-[var(--gray-muted)]">月々（72回）</div>
+              <div class="text-[34px] font-bold leading-none tracking-tight" style="color:var(--navy);">¥${m72}<span class="text-base font-bold">〜</span></div>
+              <div class="text-[11px] text-[var(--gray-text)] mt-1 mb-2">4年(48回)なら ¥${m48}/月</div>
+              <div class="rounded-lg px-3 py-2 text-left" style="background:rgba(0,160,233,0.08);">
+                <div class="flex items-baseline gap-1">
+                  <span class="text-[11px] font-bold" style="color:var(--sky-dark);">支払総額</span>
+                  <span class="text-[24px] font-bold leading-none tabular-nums" style="color:var(--sky-dark);">${c.total}<span class="text-sm">万円</span></span>
+                </div>
+                <div class="text-[10px] text-[var(--gray-text)] mt-0.5">車両本体 ${c.body}万円</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap mt-2.5 pt-2.5 border-t border-[var(--line-soft)]">
+            ${equipHtml}
+            <div class="ml-auto flex items-center gap-3">
+              <div class="flex items-center gap-1 text-[11px] text-[var(--gray-text)]">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                ${c.rev} · ${c.shop}（${c.area}）
+              </div>
+              <button onclick="event.stopPropagation()" class="px-3 py-1.5 rounded-md text-white text-xs font-bold whitespace-nowrap" style="background:var(--sky-grad);">お客様に提案 ＋</button>
+              <label class="compare-check" onclick="event.stopPropagation()"><input type="checkbox"> 比較</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  document.getElementById('vehicleList').insertAdjacentHTML('beforeend', cars.map((c,i)=>vCard(c,i)).join(''));
+</script>
+</body>
+</html>
