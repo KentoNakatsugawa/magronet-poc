@@ -173,12 +173,6 @@
   .v-thumb { height: 46px; border-radius: 6px; overflow: hidden; cursor: pointer; position: relative; background: #E3ECF3; transition: box-shadow 0.15s; }
   .v-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .v-thumb:hover { box-shadow: 0 0 0 2px var(--sky); }
-  .v-img::after {
-    content:''; position:absolute; inset:0;
-    background: linear-gradient(115deg, transparent 60%, rgba(255,255,255,0.45) 75%, transparent 90%);
-    opacity:0; transition: opacity 0.4s;
-  }
-  .v-card:hover .v-img::after { opacity:1; }
 
   /* spec table inside card */
   .spec-table { width: 100%; border-collapse: collapse; }
@@ -629,9 +623,9 @@
           <div class="px-4 py-2.5 flex items-center justify-between flex-wrap gap-3 border-b border-[var(--line-soft)]">
             <div class="flex items-baseline gap-1.5 flex-wrap">
               <span class="text-[13px] font-bold" style="color:var(--navy);">ご希望に合うクルマ</span>
-              <span class="text-[42px] font-bold leading-none tracking-tight tabular-nums" style="color:var(--sky);" id="liveCount">142,890</span>
+              <span class="text-[42px] font-bold leading-none tracking-tight tabular-nums" style="color:var(--sky);" id="liveCount">3</span>
               <span class="text-lg font-bold" style="color:var(--navy);">台</span>
-              <span class="text-[11px] text-[var(--gray-muted)] ml-1">条件を絞ると即更新 ・ 1〜20台を表示中</span>
+              <span class="text-[11px] text-[var(--gray-muted)] ml-1">条件を絞ると即更新 ・ 1〜3台を表示中　※スペックはBQ連携後に反映</span>
             </div>
             <div class="flex items-center gap-2">
               <label class="compare-check"><input type="checkbox" onchange="toggleCompareBar(this.checked)"> 比較モード</label>
@@ -662,261 +656,7 @@
       </div>
 
       <!-- ── VEHICLE LIST（カードで囲まず水平線で区切るリスト） ── -->
-      <div id="vehicleList">
-
-        <!-- CARD 1 -->
-        <article class="v-card" onclick="openPresent()">
-          <div class="flex flex-col sm:flex-row">
-            <!-- image -->
-            <div class="v-media flex-shrink-0">
-              <div class="v-img">
-                <img src="https://loremflickr.com/600/340/car?lock=1" alt="車両イメージ" loading="lazy">
-                <span class="absolute top-2 left-2 badge b-new">NEW</span>
-                <span class="absolute bottom-2 right-2 text-[10px] text-white px-2 py-0.5 rounded" style="background:rgba(0,32,71,0.7);">📷 32枚</span>
-                <button class="fav-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center" onclick="event.stopPropagation(); toggleFav(this)">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A0AE" stroke-width="2" class="fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                </button>
-              </div>
-              <div class="grid grid-cols-3 gap-1 mt-1">
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=2" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=3" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=4" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=5" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=6" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=7" alt="" loading="lazy"><span class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white" style="background:rgba(0,32,71,0.5);">+26</span></div>
-              </div>
-            </div>
-
-            <!-- body -->
-            <div class="flex-1 p-4 min-w-0">
-              <div class="flex items-start justify-between gap-3 mb-2">
-                <div class="min-w-0">
-                  <div class="flex items-center gap-2 mb-0.5">
-                    <span class="text-xs text-[var(--gray-muted)]">トヨタ</span>
-                    <span class="badge b-warranty">保証付</span>
-                    <span class="badge b-oneowner">ワンオーナー</span>
-                    <span class="badge b-oneowner">禁煙車</span>
-                  </div>
-                  <h3 class="text-xl font-bold leading-snug truncate">ハリアー Z 2.0 ターボ 4WD 純正ナビ 革シート</h3>
-                </div>
-                <div class="rating-badge flex-shrink-0">
-                  <span class="text-sm font-bold leading-none">4.5</span>
-                  <span class="text-[8px] opacity-70 mt-0.5">鑑定点</span>
-                </div>
-              </div>
-
-              <div class="flex gap-4">
-                <!-- spec table -->
-                <table class="spec-table flex-1">
-                  <tr><td class="k">年式</td><td class="v v-emph">2022(R4)</td><td class="k">車検</td><td class="v">2026/03</td></tr>
-                  <tr><td class="k">走行</td><td class="v v-emph">2.1万km</td><td class="k">修復歴</td><td class="v" style="color:var(--good);">なし</td></tr>
-                  <tr><td class="k">排気量</td><td class="v">1986cc</td><td class="k">ミッション</td><td class="v">AT</td></tr>
-                  <tr><td class="k">駆動</td><td class="v">4WD</td><td class="k">カラー</td><td class="v">ブラック</td></tr>
-                  <tr><td class="k">乗車定員</td><td class="v">5名</td><td class="k"></td><td class="v"></td></tr>
-                </table>
-
-                <!-- price -->
-                <div class="flex-shrink-0 text-right pl-4 border-l border-[var(--line-soft)]" style="width:210px;">
-                  <div class="text-[11px] text-[var(--gray-muted)]">月々（72回）</div>
-                  <div class="text-[34px] font-bold leading-none tracking-tight" style="color:var(--navy);">¥41,600<span class="text-base font-bold">〜</span></div>
-                  <div class="text-[11px] text-[var(--gray-text)] mt-1 mb-2">4年(48回)なら ¥59,100/月</div>
-                  <div class="rounded-lg px-3 py-2 text-left" style="background:rgba(0,160,233,0.08);">
-                    <div class="flex items-baseline gap-1">
-                      <span class="text-[11px] font-bold" style="color:var(--sky-dark);">支払総額</span>
-                      <span class="text-[24px] font-bold leading-none tabular-nums" style="color:var(--sky-dark);">258.0<span class="text-sm">万円</span></span>
-                    </div>
-                    <div class="text-[10px] text-[var(--gray-text)] mt-0.5">車両本体 248.0万円</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- equips -->
-              <div class="flex items-center gap-1.5 flex-wrap mt-2.5 pt-2.5 border-t border-[var(--line-soft)]">
-                <span class="equip">🅿 バックカメラ</span>
-                <span class="equip">ETC2.0</span>
-                <span class="equip">LEDヘッド</span>
-                <span class="equip">本革シート</span>
-                <span class="equip">サンルーフ</span>
-                <span class="equip">衝突軽減B</span>
-                <span class="equip">+12</span>
-                <div class="ml-auto flex items-center gap-3">
-                  <div class="flex items-center gap-1 text-[11px] text-[var(--gray-text)]">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    4.8 · 東京オート渋谷店（東京都）
-                  </div>
-                  <button onclick="event.stopPropagation()" class="px-3 py-1.5 rounded-md text-white text-xs font-bold whitespace-nowrap" style="background:var(--sky-grad);">お客様に提案 ＋</button>
-                  <label class="compare-check" onclick="event.stopPropagation()"><input type="checkbox"> 比較</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- CARD 2 -->
-        <article class="v-card" onclick="openPresent()">
-          <div class="flex flex-col sm:flex-row">
-            <div class="v-media flex-shrink-0">
-              <div class="v-img">
-                <img src="https://loremflickr.com/600/340/car?lock=11" alt="車両イメージ" loading="lazy">
-                <span class="absolute top-2 left-2 badge b-deal">価格DOWN</span>
-                <span class="absolute bottom-2 right-2 text-[10px] text-white px-2 py-0.5 rounded" style="background:rgba(0,32,71,0.7);">📷 45枚</span>
-                <button class="fav-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center" onclick="event.stopPropagation(); toggleFav(this)">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A0AE" stroke-width="2" class="fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                </button>
-              </div>
-              <div class="grid grid-cols-3 gap-1 mt-1">
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=12" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=13" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=14" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=15" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=16" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=17" alt="" loading="lazy"><span class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white" style="background:rgba(0,32,71,0.5);">+39</span></div>
-              </div>
-            </div>
-            <div class="flex-1 p-4 min-w-0">
-              <div class="flex items-start justify-between gap-3 mb-2">
-                <div class="min-w-0">
-                  <div class="flex items-center gap-2 mb-0.5">
-                    <span class="text-xs text-[var(--gray-muted)]">ホンダ</span>
-                    <span class="badge b-warranty">保証付</span>
-                    <span class="badge b-oneowner">禁煙車</span>
-                  </div>
-                  <h3 class="text-xl font-bold leading-snug truncate">N-BOX カスタム G・L ターボ 両側電動 純正ナビ</h3>
-                </div>
-                <div class="rating-badge flex-shrink-0">
-                  <span class="text-sm font-bold leading-none">4.0</span>
-                  <span class="text-[8px] opacity-70 mt-0.5">鑑定点</span>
-                </div>
-              </div>
-              <div class="flex gap-4">
-                <table class="spec-table flex-1">
-                  <tr><td class="k">年式</td><td class="v v-emph">2021(R3)</td><td class="k">車検</td><td class="v">2025/11</td></tr>
-                  <tr><td class="k">走行</td><td class="v v-emph">1.8万km</td><td class="k">修復歴</td><td class="v" style="color:var(--good);">なし</td></tr>
-                  <tr><td class="k">排気量</td><td class="v">660cc</td><td class="k">ミッション</td><td class="v">CVT</td></tr>
-                  <tr><td class="k">駆動</td><td class="v">FF</td><td class="k">カラー</td><td class="v">ホワイトパール</td></tr>
-                  <tr><td class="k">乗車定員</td><td class="v">4名</td><td class="k"></td><td class="v"></td></tr>
-                </table>
-                <div class="flex-shrink-0 text-right pl-4 border-l border-[var(--line-soft)]" style="width:210px;">
-                  <div class="text-[11px] text-[var(--gray-muted)]">月々（72回）</div>
-                  <div class="text-[34px] font-bold leading-none tracking-tight" style="color:var(--navy);">¥22,900<span class="text-base font-bold">〜</span></div>
-                  <div class="text-[11px] text-[var(--gray-text)] mt-1 mb-2">4年(48回)なら ¥32,500/月</div>
-                  <div class="rounded-lg px-3 py-2 text-left" style="background:rgba(0,160,233,0.08);">
-                    <div class="flex items-baseline gap-1">
-                      <span class="text-[11px] font-bold" style="color:var(--sky-dark);">支払総額</span>
-                      <span class="text-[24px] font-bold leading-none tabular-nums" style="color:var(--sky-dark);">142.0<span class="text-sm">万円</span></span>
-                    </div>
-                    <div class="text-[10px] text-[var(--gray-text)] mt-0.5">車両本体 129.0万円</div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-1.5 flex-wrap mt-2.5 pt-2.5 border-t border-[var(--line-soft)]">
-                <span class="equip">両側電動ドア</span>
-                <span class="equip">バックカメラ</span>
-                <span class="equip">ETC</span>
-                <span class="equip">スマートキー</span>
-                <span class="equip">アイドリングS</span>
-                <span class="equip">+8</span>
-                <div class="ml-auto flex items-center gap-3">
-                  <div class="flex items-center gap-1 text-[11px] text-[var(--gray-text)]">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    4.6 · オートガレージ北大阪（大阪府）
-                  </div>
-                  <button onclick="event.stopPropagation()" class="px-3 py-1.5 rounded-md text-white text-xs font-bold whitespace-nowrap" style="background:var(--sky-grad);">お客様に提案 ＋</button>
-                  <label class="compare-check" onclick="event.stopPropagation()"><input type="checkbox"> 比較</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- CARD 3 -->
-        <article class="v-card" onclick="openPresent()">
-          <div class="flex flex-col sm:flex-row">
-            <div class="v-media flex-shrink-0">
-              <div class="v-img">
-                <img src="https://loremflickr.com/600/340/car?lock=21" alt="車両イメージ" loading="lazy">
-                <span class="absolute bottom-2 right-2 text-[10px] text-white px-2 py-0.5 rounded" style="background:rgba(0,32,71,0.7);">📷 28枚</span>
-                <button class="fav-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center" onclick="event.stopPropagation(); toggleFav(this)">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#E8273A" stroke="#E8273A" stroke-width="2" class="fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                </button>
-              </div>
-              <div class="grid grid-cols-3 gap-1 mt-1">
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=22" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=23" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=24" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=25" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=26" alt="" loading="lazy"></div>
-                <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=27" alt="" loading="lazy"><span class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white" style="background:rgba(0,32,71,0.5);">+22</span></div>
-              </div>
-            </div>
-            <div class="flex-1 p-4 min-w-0">
-              <div class="flex items-start justify-between gap-3 mb-2">
-                <div class="min-w-0">
-                  <div class="flex items-center gap-2 mb-0.5">
-                    <span class="text-xs text-[var(--gray-muted)]">トヨタ</span>
-                    <span class="badge b-warranty">1年保証</span>
-                    <span class="badge b-oneowner">ワンオーナー</span>
-                  </div>
-                  <h3 class="text-xl font-bold leading-snug truncate">アルファード 2.5 S Cパッケージ サンルーフ 後席モニター</h3>
-                </div>
-                <div class="rating-badge flex-shrink-0">
-                  <span class="text-sm font-bold leading-none">4.5</span>
-                  <span class="text-[8px] opacity-70 mt-0.5">鑑定点</span>
-                </div>
-              </div>
-              <div class="flex gap-4">
-                <table class="spec-table flex-1">
-                  <tr><td class="k">年式</td><td class="v v-emph">2023(R5)</td><td class="k">車検</td><td class="v">2026/08</td></tr>
-                  <tr><td class="k">走行</td><td class="v v-emph">0.8万km</td><td class="k">修復歴</td><td class="v" style="color:var(--good);">なし</td></tr>
-                  <tr><td class="k">排気量</td><td class="v">2493cc</td><td class="k">ミッション</td><td class="v">CVT</td></tr>
-                  <tr><td class="k">駆動</td><td class="v">FF</td><td class="k">カラー</td><td class="v">パール</td></tr>
-                  <tr><td class="k">乗車定員</td><td class="v">7名</td><td class="k"></td><td class="v"></td></tr>
-                </table>
-                <div class="flex-shrink-0 text-right pl-4 border-l border-[var(--line-soft)]" style="width:210px;">
-                  <div class="text-[11px] text-[var(--gray-muted)]">月々（72回）</div>
-                  <div class="text-[34px] font-bold leading-none tracking-tight" style="color:var(--navy);">¥96,300<span class="text-base font-bold">〜</span></div>
-                  <div class="text-[11px] text-[var(--gray-text)] mt-1 mb-2">4年(48回)なら ¥137,000/月</div>
-                  <div class="rounded-lg px-3 py-2 text-left" style="background:rgba(0,160,233,0.08);">
-                    <div class="flex items-baseline gap-1">
-                      <span class="text-[11px] font-bold" style="color:var(--sky-dark);">支払総額</span>
-                      <span class="text-[24px] font-bold leading-none tabular-nums" style="color:var(--sky-dark);">598.0<span class="text-sm">万円</span></span>
-                    </div>
-                    <div class="text-[10px] text-[var(--gray-text)] mt-0.5">車両本体 580.0万円</div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-1.5 flex-wrap mt-2.5 pt-2.5 border-t border-[var(--line-soft)]">
-                <span class="equip">サンルーフ</span>
-                <span class="equip">後席モニター</span>
-                <span class="equip">両側電動ドア</span>
-                <span class="equip">全方位カメラ</span>
-                <span class="equip">レーダークルーズ</span>
-                <span class="equip">+15</span>
-                <div class="ml-auto flex items-center gap-3">
-                  <div class="flex items-center gap-1 text-[11px] text-[var(--gray-text)]">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    4.9 · プレミアムカーズ名古屋（愛知県）
-                  </div>
-                  <button onclick="event.stopPropagation()" class="px-3 py-1.5 rounded-md text-white text-xs font-bold whitespace-nowrap" style="background:var(--sky-grad);">お客様に提案 ＋</button>
-                  <label class="compare-check" onclick="event.stopPropagation()"><input type="checkbox"> 比較</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </article>
-
-      </div>
-
-      <!-- pagination -->
-      <div class="flex items-center justify-center gap-1.5 mt-6">
-        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] text-[var(--gray-muted)] flex items-center justify-center">‹</button>
-        <button class="w-9 h-9 rounded-lg text-white font-bold flex items-center justify-center" style="background:var(--sky-grad);">1</button>
-        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] hover:border-[var(--sky)] transition-colors flex items-center justify-center">2</button>
-        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] hover:border-[var(--sky)] transition-colors flex items-center justify-center">3</button>
-        <span class="px-2 text-[var(--gray-muted)]">…</span>
-        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] hover:border-[var(--sky)] transition-colors flex items-center justify-center">7,145</button>
-        <button class="w-9 h-9 rounded-lg bg-white border border-[var(--line)] hover:border-[var(--sky)] transition-colors flex items-center justify-center">›</button>
-      </div>
+      <div id="vehicleList"></div>
     </main>
   </div>
 </div>
@@ -1381,26 +1121,20 @@
     <!-- 写真（主役） -->
     <div class="pm-photo-col">
       <div class="pm-photo">
-        <img id="pmMainImg" src="https://loremflickr.com/1200/800/car?lock=1" alt="車両イメージ">
-        <span class="pm-photo-badge">トヨタ ハリアー</span>
+        <img id="pmMainImg" src="images/63678_1.jpeg" alt="車両イメージ">
+        <span class="pm-photo-badge" id="pmBadge">トヨタ エスティマ（ID:63678）</span>
       </div>
-      <div class="pm-thumbs">
-        <div class="active" onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/1200/800/car?lock=1" alt=""></div>
-        <div onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/400/300/car?lock=2" alt=""></div>
-        <div onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/400/300/car?lock=3" alt=""></div>
-        <div onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/400/300/car?lock=4" alt=""></div>
-        <div onclick="pmSwapPhoto(this)"><img src="https://loremflickr.com/400/300/car?lock=5" alt=""></div>
-      </div>
+      <div class="pm-thumbs" id="pmThumbs"></div>
     </div>
 
     <!-- 情報（核情報を大きく・高コントラストで） -->
     <div class="pm-info-col">
       <div>
-        <div class="pm-maker">トヨタ</div>
-        <div class="pm-name">ハリアー Z 2.0 ターボ 4WD 純正ナビ 革シート</div>
+        <div class="pm-maker" id="pmMaker">トヨタ</div>
+        <div class="pm-name" id="pmName">エスティマ（車両ID:63678）</div>
       </div>
 
-      <div class="pm-badges">
+      <div class="pm-badges" id="pmBadges">
         <span class="pm-badge good">✓ 修復歴なし</span>
         <span class="pm-badge sky">🛡 1年保証付き</span>
         <span class="pm-badge plain">ワンオーナー</span>
@@ -1410,24 +1144,24 @@
       <div class="pm-price">
         <div class="pm-price-left">
           <div class="lbl-total">月々（72回）</div>
-          <div class="total">¥41,600<span>/月〜</span></div>
-          <div class="sub">4年（48回）なら ¥59,100/月</div>
+          <div class="total" id="pmM72">¥41,600<span>/月〜</span></div>
+          <div class="sub" id="pmM48">4年（48回）なら ¥59,100/月</div>
         </div>
         <div class="pm-price-right">
           <div class="total-lbl">支払総額</div>
-          <div class="total-amt">258.0<span>万円</span></div>
-          <div class="total-body">車両本体 248.0万円</div>
+          <div class="total-amt" id="pmTotal">258.0<span>万円</span></div>
+          <div class="total-body" id="pmBody">車両本体 248.0万円</div>
         </div>
       </div>
 
-      <div class="pm-specs">
+      <div class="pm-specs" id="pmSpecs">
         <div class="pm-spec"><div class="v">2022</div><div class="k">年式 (R4)</div></div>
         <div class="pm-spec"><div class="v">2.1万</div><div class="k">走行km</div></div>
         <div class="pm-spec"><div class="v good">なし</div><div class="k">修復歴</div></div>
         <div class="pm-spec"><div class="v">4.5</div><div class="k">鑑定点</div></div>
       </div>
 
-      <div class="pm-report">
+      <div class="pm-report" id="pmReport">
         <div class="head">
           <span class="t">車両状態レポート</span>
           <span class="score">総合 4.5点</span>
@@ -1438,7 +1172,7 @@
         <div class="row"><span class="lbl">機関</span><span class="track"><span class="fill" style="width:95%; background:var(--good);"></span></span><span class="rk">良好</span></div>
       </div>
 
-      <div class="pm-shop">
+      <div class="pm-shop" id="pmShop">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         評価4.8 ・ 東京オート渋谷店（東京都）
       </div>
@@ -1467,7 +1201,46 @@
     document.getElementById('compareBar').classList.toggle('translate-y-full', !open);
   }
   // ── 商談プレゼンモード（車両クリックで直接起動。Zoom画面共有でお客様がスマホ視聴する前提の大型表示）──
-  function openPresent(){
+  function openPresent(idx){
+    const c = (window.__cars||[])[idx];
+    if(c){
+      const dash = v => (v==null||v===''||v==='—') ? '—' : v;
+      const imgs = c.imgs||[];
+      const main = document.getElementById('pmMainImg');
+      if(main) main.src = imgs[0]||'';
+      const badge = document.getElementById('pmBadge');
+      if(badge) badge.textContent = `${c.maker} ${c.name}（ID:${c.vid}）`;
+      const thumbs = document.getElementById('pmThumbs');
+      if(thumbs) thumbs.innerHTML = imgs.map((s,i)=>`<div class="${i===0?'active':''}" onclick="pmSwapPhoto(this)"><img src="${s}" alt=""></div>`).join('');
+      const mk = document.getElementById('pmMaker'); if(mk) mk.textContent = c.maker;
+      const nm = document.getElementById('pmName'); if(nm) nm.textContent = `${c.name}（車両ID:${c.vid}）`;
+      const specs = document.getElementById('pmSpecs');
+      if(specs) specs.innerHTML =
+        `<div class="pm-spec"><div class="v">${dash(c.year)}</div><div class="k">年式</div></div>`+
+        `<div class="pm-spec"><div class="v">${dash(c.km)}</div><div class="k">走行km</div></div>`+
+        `<div class="pm-spec"><div class="v">${dash(c.repair)}</div><div class="k">修復歴</div></div>`+
+        `<div class="pm-spec"><div class="v">${dash(c.grade)}</div><div class="k">鑑定点</div></div>`;
+      // 価格
+      const m72=document.getElementById('pmM72'), m48=document.getElementById('pmM48'),
+            tot=document.getElementById('pmTotal'), bod=document.getElementById('pmBody');
+      if(c.total==null){
+        if(m72) m72.innerHTML='¥—<span>/月〜</span>';
+        if(m48) m48.textContent='4年（48回）なら —/月';
+        if(tot) tot.innerHTML='—<span>万円</span>';
+        if(bod) bod.textContent='車両本体 —万円';
+      } else {
+        const t=parseFloat(c.total)*10000, f=n=>'¥'+(Math.round(n/100)*100).toLocaleString('ja-JP');
+        if(m72) m72.innerHTML=`${f(t*1.16/72)}<span>/月〜</span>`;
+        if(m48) m48.textContent=`4年（48回）なら ${f(t*1.10/48)}/月`;
+        if(tot) tot.innerHTML=`${c.total}<span>万円</span>`;
+        if(bod) bod.textContent=`車両本体 ${c.body}万円`;
+      }
+      // 状態・保証・レポートはBQ連携後
+      const bdg=document.getElementById('pmBadges');
+      if(bdg) bdg.innerHTML='<span class="text-xs text-[var(--gray-muted)]">状態・保証情報はBQ連携後に表示</span>';
+      const rep=document.getElementById('pmReport'); if(rep) rep.style.display='none';
+      const shop=document.getElementById('pmShop'); if(shop) shop.innerHTML=`車両ID ${c.vid}`;
+    }
     document.body.style.overflow='hidden';
     const m=document.getElementById('presentModal');
     m.style.opacity='1'; m.style.pointerEvents='auto';
@@ -1546,83 +1319,77 @@
     kei:'<path d="M48 42l6-14h92l6 14" stroke="#7A8694" stroke-width="2"/>'
   };
   const cars = [
-    {maker:'マツダ', name:'CX-5 XD Lパッケージ ディーゼル 4WD 本革', shape:'suv', badges:['保証付','禁煙車'], grade:'4.5',
-      year:'2021(R3)', shaken:'2025/12', km:'3.4万km', repair:'なし', cc:'2188cc', mt:'AT', drive:'4WD', color:'ソウルレッド', seats:'5名',
-      total:'248.0', body:'238.0', diff:'相場より 15万円お得', diffColor:'good', gauge:40,
-      equips:['本革シート','BOSEサウンド','レーダークルーズ','全方位カメラ'], more:10, shop:'マツダ認定 横浜', area:'神奈川県', rev:'4.7', pics:38, tag:''},
-    {maker:'スズキ', name:'スペーシア カスタム HYBRID XS 両側電動', shape:'kei', badges:['保証付','ワンオーナー','禁煙車'], grade:'4.0',
-      year:'2022(R4)', shaken:'2026/01', km:'1.2万km', repair:'なし', cc:'660cc', mt:'CVT', drive:'FF', color:'ホワイト', seats:'4名',
-      total:'158.0', body:'148.0', diff:'相場より 6万円お得', diffColor:'good', gauge:44,
-      equips:['両側電動ドア','全方位カメラ','スマートキー','LEDヘッド'], more:7, shop:'スズキアリーナ福岡', area:'福岡県', rev:'4.5', pics:29, tag:'new'},
-    {maker:'トヨタ', name:'プリウス A ツーリングセレクション 純正ナビ', shape:'sedan', badges:['保証付','ワンオーナー'], grade:'4.5',
-      year:'2023(R5)', shaken:'2026/05', km:'0.9万km', repair:'なし', cc:'1797cc', mt:'CVT', drive:'FF', color:'ブラック', seats:'5名',
-      total:'328.0', body:'315.0', diff:'相場とほぼ同等', diffColor:'sky', gauge:52,
-      equips:['純正ナビ','バックカメラ','BSM','ヘッドアップD'], more:11, shop:'トヨタモビリティ東京', area:'東京都', rev:'4.8', pics:42, tag:''},
-    {maker:'日産', name:'セレナ e-POWER ハイウェイスター V プロパイロット', shape:'van', badges:['保証付','禁煙車'], grade:'4.0',
-      year:'2021(R3)', shaken:'2025/10', km:'2.8万km', repair:'なし', cc:'1198cc', mt:'CVT', drive:'FF', color:'ホワイト', seats:'8名',
-      total:'268.0', body:'255.0', diff:'相場より 9万円お得', diffColor:'good', gauge:43,
-      equips:['プロパイロット','両側電動ドア','全方位カメラ','ETC2.0'], more:9, shop:'日産プリンス札幌', area:'北海道', rev:'4.6', pics:35, tag:''},
-    {maker:'スバル', name:'フォレスター Advance アイサイト X-MODE 4WD', shape:'suv', badges:['保証付','ワンオーナー','禁煙車'], grade:'4.5',
-      year:'2022(R4)', shaken:'2026/02', km:'2.0万km', repair:'なし', cc:'1995cc', mt:'CVT', drive:'4WD', color:'クリスタルホワイト', seats:'5名',
-      total:'298.0', body:'285.0', diff:'相場より 11万円お得', diffColor:'good', gauge:41,
-      equips:['アイサイト','本革シート','パワーシート','ルーフレール'], more:8, shop:'スバル中部', area:'愛知県', rev:'4.7', pics:31, tag:'new'},
-    {maker:'ホンダ', name:'ヴェゼル e:HEV PLaY パノラマルーフ', shape:'suv', badges:['保証付','ワンオーナー'], grade:'4.5',
-      year:'2023(R5)', shaken:'2026/07', km:'0.6万km', repair:'なし', cc:'1496cc', mt:'CVT', drive:'FF', color:'プレミアムサンライト', seats:'5名',
-      total:'318.0', body:'305.0', diff:'相場より 13万円お得', diffColor:'good', gauge:39,
-      equips:['パノラマルーフ','ホンダセンシング','本革','LEDフォグ'], more:12, shop:'ホンダカーズ大阪', area:'大阪府', rev:'4.8', pics:40, tag:''},
-    {maker:'レクサス', name:'RX450h version L サンルーフ マークレビンソン', shape:'suv', badges:['1年保証','ワンオーナー','禁煙車'], grade:'5.0',
-      year:'2022(R4)', shaken:'2026/04', km:'1.5万km', repair:'なし', cc:'3456cc', mt:'CVT', drive:'4WD', color:'ブラック', seats:'5名',
-      total:'748.0', body:'728.0', diff:'相場より 18万円高め', diffColor:'warn', gauge:70,
-      equips:['サンルーフ','マークレビンソン','本革','後席モニター'], more:16, shop:'レクサス銀座', area:'東京都', rev:'4.9', pics:48, tag:''},
-    {maker:'ダイハツ', name:'タント カスタム RS トップエディション 両側電動', shape:'kei', badges:['保証付','禁煙車'], grade:'4.0',
-      year:'2021(R3)', shaken:'2025/09', km:'2.2万km', repair:'なし', cc:'660cc', mt:'CVT', drive:'FF', color:'パールホワイト', seats:'4名',
-      total:'142.0', body:'132.0', diff:'相場より 7万円お得', diffColor:'good', gauge:42,
-      equips:['両側電動ドア','スマアシ','バックカメラ','LEDヘッド'], more:6, shop:'ダイハツ広島', area:'広島県', rev:'4.4', pics:27, tag:''},
-    {maker:'トヨタ', name:'ランドクルーザープラド TX Lパッケージ 7人乗 4WD', shape:'suv', badges:['1年保証','ワンオーナー'], grade:'4.5',
-      year:'2020(R2)', shaken:'2026/06', km:'4.8万km', repair:'なし', cc:'2754cc', mt:'AT', drive:'4WD', color:'ブラック', seats:'7名',
-      total:'528.0', body:'508.0', diff:'相場より 22万円お得', diffColor:'good', gauge:36,
-      equips:['本革シート','サンルーフ','全方位カメラ','ルーフレール'], more:14, shop:'トヨタ仙台', area:'宮城県', rev:'4.7', pics:44, tag:''}
+    {vid:'77256', maker:'ホンダ', name:'N-BOX', shape:'kei', badges:[], grade:'—',
+      year:'—', shaken:'—', km:'—', repair:'—', cc:'—', mt:'—', drive:'—', color:'—', seats:'—',
+      total:null, body:'—', diff:'', diffColor:'good', gauge:0,
+      equips:[], more:0, shop:'—', area:'—', rev:'—', tag:'',
+      imgs:['images/77256_1.jpeg','images/77256_2.jpeg','images/77256_3.jpeg']},
+    {vid:'76537', maker:'ダイハツ', name:'タント', shape:'kei', badges:[], grade:'—',
+      year:'—', shaken:'—', km:'—', repair:'—', cc:'—', mt:'—', drive:'—', color:'—', seats:'—',
+      total:null, body:'—', diff:'', diffColor:'good', gauge:0,
+      equips:[], more:0, shop:'—', area:'—', rev:'—', tag:'',
+      imgs:['images/76537_1.jpeg','images/76537_2.jpeg','images/76537_3.jpeg','images/76537_4.jpeg','images/76537_5.jpeg']},
+    {vid:'63678', maker:'トヨタ', name:'エスティマ', shape:'van', badges:[], grade:'—',
+      year:'—', shaken:'—', km:'—', repair:'—', cc:'—', mt:'—', drive:'—', color:'—', seats:'—',
+      total:null, body:'—', diff:'', diffColor:'good', gauge:0,
+      equips:[], more:0, shop:'—', area:'—', rev:'—', tag:'',
+      imgs:['images/63678_1.jpeg','images/63678_2.jpeg','images/63678_3.jpeg','images/63678_4.jpeg']}
   ];
+  window.__cars = cars;
 
   function vCard(c, idx){
-    const _lb = (idx+3)*10;
-    const _t = parseFloat(c.total)*10000;
-    const _fmt = n => (Math.round(n/100)*100).toLocaleString('ja-JP');
-    const m48 = _fmt(_t*1.10/48);  // 4年・金利概算込み
-    const m72 = _fmt(_t*1.16/72);  // 6年・金利概算込み
+    const imgs = c.imgs || [];
+    const pics = c.pics || imgs.length;
+    const mainImg = imgs[0] || `https://loremflickr.com/600/340/car?lock=${idx+1}`;
+    // サムネ（最大6枚、7枚以上は+N表示）
+    let thumbs = '';
+    const tlist = imgs.length ? imgs.slice(0, 6) : [1,2,3,4,5,6].map(n=>`https://loremflickr.com/200/120/car?lock=${n}`);
+    tlist.forEach((src, i) => {
+      const over = (i === 5 && pics > 6) ? `<span class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white" style="background:rgba(0,32,71,0.5);">+${pics-6}</span>` : '';
+      thumbs += `<div class="v-thumb"><img src="${src}" alt="" loading="lazy">${over}</div>`;
+    });
+    // 価格（BQ未取得時は '—'）
+    let priceMain, priceSub, totalDisp, bodyDisp;
+    if (c.total == null) {
+      priceMain = '—'; priceSub = '4年(48回)なら —/月'; totalDisp = '—'; bodyDisp = '—';
+    } else {
+      const _t = parseFloat(c.total)*10000;
+      const _fmt = n => '¥' + (Math.round(n/100)*100).toLocaleString('ja-JP');
+      priceMain = _fmt(_t*1.16/72); priceSub = `4年(48回)なら ${_fmt(_t*1.10/48)}/月`;
+      totalDisp = c.total; bodyDisp = c.body;
+    }
     const tagHtml = c.tag==='new' ? '<span class="absolute top-2 left-2 badge b-new">NEW</span>'
       : c.tag==='deal' ? '<span class="absolute top-2 left-2 badge b-deal">価格DOWN</span>' : '';
-    const badgeHtml = c.badges.map(b=>{
+    const badgeHtml = (c.badges||[]).map(b=>{
       const cls = b.includes('保証') ? 'b-warranty' : 'b-oneowner';
       return `<span class="badge ${cls}">${b}</span>`;
     }).join('');
-    const equipHtml = c.equips.map(e=>`<span class="equip">${e}</span>`).join('') + `<span class="equip">+${c.more}</span>`;
+    const equipHtml = (c.equips && c.equips.length)
+      ? c.equips.map(e=>`<span class="equip">${e}</span>`).join('') + (c.more ? `<span class="equip">+${c.more}</span>` : '')
+      : '<span class="text-[11px] text-[var(--gray-muted)]">装備情報はBQ連携後に表示</span>';
+    const shopHtml = (c.shop && c.shop !== '—')
+      ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${c.rev} · ${c.shop}（${c.area}）`
+      : `車両ID ${c.vid}`;
     return `
-    <article class="v-card" onclick="openPresent()">
+    <article class="v-card" onclick="openPresent(${idx})">
       <div class="flex flex-col sm:flex-row">
         <div class="v-media flex-shrink-0">
           <div class="v-img">
-            <img src="https://loremflickr.com/600/340/car?lock=${_lb+1}" alt="車両イメージ" loading="lazy">
+            <img src="${mainImg}" alt="車両イメージ" loading="lazy">
             ${tagHtml}
-            <span class="absolute bottom-2 right-2 text-[10px] text-white px-2 py-0.5 rounded" style="background:rgba(0,32,71,0.7);">📷 ${c.pics}枚</span>
+            <span class="absolute bottom-2 right-2 text-[10px] text-white px-2 py-0.5 rounded" style="background:rgba(0,32,71,0.7);">📷 ${pics}枚</span>
             <button class="fav-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center" onclick="event.stopPropagation(); toggleFav(this)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A0AE" stroke-width="2" class="fav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             </button>
           </div>
-          <div class="grid grid-cols-3 gap-1 mt-1">
-            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+2}" alt="" loading="lazy"></div>
-            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+3}" alt="" loading="lazy"></div>
-            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+4}" alt="" loading="lazy"></div>
-            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+5}" alt="" loading="lazy"></div>
-            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+6}" alt="" loading="lazy"></div>
-            <div class="v-thumb"><img src="https://loremflickr.com/200/120/car?lock=${_lb+7}" alt="" loading="lazy"><span class="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-white" style="background:rgba(0,32,71,0.5);">+${c.pics-6}</span></div>
-          </div>
+          <div class="grid grid-cols-3 gap-1 mt-1">${thumbs}</div>
         </div>
         <div class="flex-1 p-4 min-w-0">
           <div class="flex items-start justify-between gap-3 mb-2">
             <div class="min-w-0">
               <div class="flex items-center gap-2 mb-0.5">
                 <span class="text-xs text-[var(--gray-muted)]">${c.maker}</span>${badgeHtml}
+                <span class="text-[10px] text-[var(--gray-muted)]">ID:${c.vid}</span>
               </div>
               <h3 class="text-xl font-bold leading-snug truncate">${c.name}</h3>
             </div>
@@ -1633,31 +1400,28 @@
           <div class="flex gap-4">
             <table class="spec-table flex-1">
               <tr><td class="k">年式</td><td class="v v-emph">${c.year}</td><td class="k">車検</td><td class="v">${c.shaken}</td></tr>
-              <tr><td class="k">走行</td><td class="v v-emph">${c.km}</td><td class="k">修復歴</td><td class="v" style="color:var(--good);">${c.repair}</td></tr>
+              <tr><td class="k">走行</td><td class="v v-emph">${c.km}</td><td class="k">修復歴</td><td class="v">${c.repair}</td></tr>
               <tr><td class="k">排気量</td><td class="v">${c.cc}</td><td class="k">ミッション</td><td class="v">${c.mt}</td></tr>
               <tr><td class="k">駆動</td><td class="v">${c.drive}</td><td class="k">カラー</td><td class="v">${c.color}</td></tr>
               <tr><td class="k">乗車定員</td><td class="v">${c.seats}</td><td class="k"></td><td class="v"></td></tr>
             </table>
             <div class="flex-shrink-0 text-right pl-4 border-l border-[var(--line-soft)]" style="width:210px;">
               <div class="text-[11px] text-[var(--gray-muted)]">月々（72回）</div>
-              <div class="text-[34px] font-bold leading-none tracking-tight" style="color:var(--navy);">¥${m72}<span class="text-base font-bold">〜</span></div>
-              <div class="text-[11px] text-[var(--gray-text)] mt-1 mb-2">4年(48回)なら ¥${m48}/月</div>
+              <div class="text-[34px] font-bold leading-none tracking-tight" style="color:var(--navy);">${priceMain}<span class="text-base font-bold">〜</span></div>
+              <div class="text-[11px] text-[var(--gray-text)] mt-1 mb-2">${priceSub}</div>
               <div class="rounded-lg px-3 py-2 text-left" style="background:rgba(0,160,233,0.08);">
                 <div class="flex items-baseline gap-1">
                   <span class="text-[11px] font-bold" style="color:var(--sky-dark);">支払総額</span>
-                  <span class="text-[24px] font-bold leading-none tabular-nums" style="color:var(--sky-dark);">${c.total}<span class="text-sm">万円</span></span>
+                  <span class="text-[24px] font-bold leading-none tabular-nums" style="color:var(--sky-dark);">${totalDisp}<span class="text-sm">万円</span></span>
                 </div>
-                <div class="text-[10px] text-[var(--gray-text)] mt-0.5">車両本体 ${c.body}万円</div>
+                <div class="text-[10px] text-[var(--gray-text)] mt-0.5">車両本体 ${bodyDisp}万円</div>
               </div>
             </div>
           </div>
           <div class="flex items-center gap-1.5 flex-wrap mt-2.5 pt-2.5 border-t border-[var(--line-soft)]">
             ${equipHtml}
             <div class="ml-auto flex items-center gap-3">
-              <div class="flex items-center gap-1 text-[11px] text-[var(--gray-text)]">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="#FCB000"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                ${c.rev} · ${c.shop}（${c.area}）
-              </div>
+              <div class="flex items-center gap-1 text-[11px] text-[var(--gray-text)]">${shopHtml}</div>
               <button onclick="event.stopPropagation()" class="px-3 py-1.5 rounded-md text-white text-xs font-bold whitespace-nowrap" style="background:var(--sky-grad);">お客様に提案 ＋</button>
               <label class="compare-check" onclick="event.stopPropagation()"><input type="checkbox"> 比較</label>
             </div>
